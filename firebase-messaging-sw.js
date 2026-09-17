@@ -7,7 +7,7 @@ importScripts(
 );
 
 firebase.initializeApp({
-  apiKey: "AIzaSyC2d9nYhQYkJDJpPz-kK9MFgoeN9JNhAOM",
+  apiKey: "AIzaSyC2d9YhQYkDJpPz-kK9MFgoeN9JNhAOM",
   authDomain: "ola-job-f75b0.firebaseapp.com",
   projectId: "ola-job-f75b0",
   storageBucket: "ola-job-f75b0.firebasestorage.app",
