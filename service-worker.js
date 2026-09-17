@@ -1,248 +1,129 @@
 /* =====================================================
-   JOB TIME SERVICE WORKER
-   PWA + FIREBASE FCM
+   JOB TIME WEB PUSH SERVICE WORKER
 ===================================================== */
 
-
-/* =====================================================
-   FIREBASE
-===================================================== */
-
-importScripts(
-  "https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"
-);
-
-importScripts(
-  "https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging-compat.js"
-);
-
-
-/* =====================================================
-   FIREBASE CONFIG
-===================================================== */
-
-firebase.initializeApp({
-
-  apiKey:
-    "AIzaSyC2d9YhQYkJDJpPz-kK9MFgoeN9JNhAOM",
-
-  authDomain:
-    "ola-job-f75b0.firebaseapp.com",
-
-  projectId:
-    "ola-job-f75b0",
-
-  storageBucket:
-    "ola-job-f75b0.firebasestorage.app",
-
-  messagingSenderId:
-    "619901142506",
-
-  appId:
-    "1:619901142506:web:bf1aec74f6448bf6ffde93",
-
-  measurementId:
-    "G-4DC0PHEQH1"
-
-});
-
-
-const messaging =
-  firebase.messaging();
-
-
-/* =====================================================
-   CACHE
-===================================================== */
-
-const CACHE_NAME =
-  "job-time-v6";
-
-
-const FILES_TO_CACHE = [
-
-  "./",
-
-  "./index.html",
-
-  "./manifest.json"
-
-];
+const CACHE_NAME = "job-time-webpush-v1";
 
 
 /* =====================================================
    INSTALL
 ===================================================== */
 
-self.addEventListener(
-  "install",
-  event => {
+self.addEventListener("install", event => {
 
-    event.waitUntil(
+  console.log(
+    "[JOB TIME] Service Worker installing"
+  );
 
-      caches
-        .open(CACHE_NAME)
-        .then(
-          cache =>
-            cache.addAll(
-              FILES_TO_CACHE
-            )
-        )
+  self.skipWaiting();
 
-    );
-
-
-    self.skipWaiting();
-
-  }
-);
+});
 
 
 /* =====================================================
    ACTIVATE
 ===================================================== */
 
-self.addEventListener(
-  "activate",
-  event => {
+self.addEventListener("activate", event => {
 
-    event.waitUntil(
+  console.log(
+    "[JOB TIME] Service Worker activated"
+  );
 
-      caches
-        .keys()
-        .then(
-          keys =>
+  event.waitUntil(
+    self.clients.claim()
+  );
 
-            Promise.all(
-
-              keys
-
-                .filter(
-                  key =>
-                    key !==
-                    CACHE_NAME
-                )
-
-                .map(
-                  key =>
-                    caches.delete(
-                      key
-                    )
-                )
-
-            )
-
-        )
-
-    );
-
-
-    self.clients.claim();
-
-  }
-);
+});
 
 
 /* =====================================================
-   FETCH
+   PUSH
 ===================================================== */
 
-self.addEventListener(
-  "fetch",
-  event => {
+self.addEventListener("push", event => {
 
-    event.respondWith(
+  console.log(
+    "[JOB TIME] PUSH received"
+  );
 
-      caches
-        .match(
-          event.request
-        )
-        .then(
-          response =>
 
-            response ||
-            fetch(
-              event.request
-            )
-        )
+  let data = {};
 
+
+  try {
+
+    if (event.data) {
+
+      data = event.data.json();
+
+    }
+
+  } catch (error) {
+
+    console.error(
+      "[JOB TIME] Push JSON error:",
+      error
     );
 
   }
-);
 
 
-/* =====================================================
-   FIREBASE BACKGROUND MESSAGE
-===================================================== */
-
-messaging.onBackgroundMessage(
-  payload => {
-
-    console.log(
-      "[JOB TIME SW] Background message:",
-      payload
-    );
+  const title =
+    data.title ||
+    "🔔 JOB TIME";
 
 
-    const title =
-      payload.notification?.title ||
-      payload.data?.title ||
-      "🔔 JOB TIME";
+  const body =
+    data.body ||
+    "ถึงเวลาปฏิบัติงานแล้ว";
 
 
-    const body =
-      payload.notification?.body ||
-      payload.data?.body ||
-      "ถึงเวลาปฏิบัติงานแล้ว";
+  const options = {
+
+    body: body,
+
+    icon:
+      "./icon-192.png",
+
+    badge:
+      "./icon-192.png",
+
+    tag:
+      data.tag ||
+      "job-time",
+
+    requireInteraction:
+      true,
+
+    vibrate:
+      [
+        300,
+        200,
+        300
+      ],
+
+    data: {
+
+      url:
+        data.url ||
+        "./"
+
+    }
+
+  };
 
 
-    const notificationOptions = {
+  event.waitUntil(
 
-      body:
-        body,
-
-      icon:
-        "./icon-192.png",
-
-      badge:
-        "./icon-192.png",
-
-      tag:
-        payload.data?.tag ||
-        "job-time",
-
-      requireInteraction:
-        true,
-
-      vibrate:
-        [
-          300,
-          200,
-          300
-        ],
-
-      data: {
-
-        url:
-          payload.data?.url ||
-          "./"
-
-      }
-
-    };
-
-
-    return self.registration.showNotification(
-
+    self.registration.showNotification(
       title,
+      options
+    )
 
-      notificationOptions
+  );
 
-    );
-
-  }
-);
+});
 
 
 /* =====================================================
@@ -263,7 +144,7 @@ self.addEventListener(
 
     event.waitUntil(
 
-      clients
+      self.clients
         .matchAll({
 
           type:
@@ -277,14 +158,14 @@ self.addEventListener(
         .then(
           clientList => {
 
-            for(
+            for (
               const client
               of clientList
-            ){
+            ) {
 
-              if(
+              if (
                 "focus" in client
-              ){
+              ) {
 
                 return client.focus();
 
@@ -293,11 +174,11 @@ self.addEventListener(
             }
 
 
-            if(
-              clients.openWindow
-            ){
+            if (
+              self.clients.openWindow
+            ) {
 
-              return clients.openWindow(
+              return self.clients.openWindow(
                 url
               );
 
