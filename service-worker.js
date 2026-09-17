@@ -51,7 +51,7 @@ const messaging =
 ===================================================== */
 
 const CACHE_NAME =
-  "job-time-v3";
+  "job-time-v4";
 
 
 const FILES_TO_CACHE = [
