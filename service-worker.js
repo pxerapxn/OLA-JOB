@@ -17,10 +17,14 @@ importScripts(
 );
 
 
+/* =====================================================
+   FIREBASE CONFIG
+===================================================== */
+
 firebase.initializeApp({
 
   apiKey:
-    "AIzaSyC2d9YhQYkDJpPz-kK9MFgoeN9JNhAOM",
+    "AIzaSyC2d9YhQYkJDJpPz-kK9MFgoeN9JNhAOM",
 
   authDomain:
     "ola-job-f75b0.firebaseapp.com",
@@ -43,20 +47,26 @@ firebase.initializeApp({
 });
 
 
-const messaging = firebase.messaging();
+const messaging =
+  firebase.messaging();
 
 
 /* =====================================================
    CACHE
 ===================================================== */
 
-const CACHE_NAME = "job-time-v5";
+const CACHE_NAME =
+  "job-time-v6";
 
 
 const FILES_TO_CACHE = [
+
   "./",
+
   "./index.html",
+
   "./manifest.json"
+
 ];
 
 
@@ -72,15 +82,15 @@ self.addEventListener(
 
       caches
         .open(CACHE_NAME)
-        .then(cache => {
-
-          return cache.addAll(
-            FILES_TO_CACHE
-          );
-
-        })
+        .then(
+          cache =>
+            cache.addAll(
+              FILES_TO_CACHE
+            )
+        )
 
     );
+
 
     self.skipWaiting();
 
@@ -100,27 +110,32 @@ self.addEventListener(
 
       caches
         .keys()
-        .then(keys => {
+        .then(
+          keys =>
 
-          return Promise.all(
+            Promise.all(
 
-            keys
+              keys
 
-              .filter(
-                key =>
-                  key !== CACHE_NAME
-              )
+                .filter(
+                  key =>
+                    key !==
+                    CACHE_NAME
+                )
 
-              .map(
-                key =>
-                  caches.delete(key)
-              )
+                .map(
+                  key =>
+                    caches.delete(
+                      key
+                    )
+                )
 
-          );
+            )
 
-        })
+        )
 
     );
+
 
     self.clients.claim();
 
@@ -139,15 +154,17 @@ self.addEventListener(
     event.respondWith(
 
       caches
-        .match(event.request)
-        .then(response => {
+        .match(
+          event.request
+        )
+        .then(
+          response =>
 
-          return (
             response ||
-            fetch(event.request)
-          );
-
-        })
+            fetch(
+              event.request
+            )
+        )
 
     );
 
@@ -182,7 +199,8 @@ messaging.onBackgroundMessage(
 
     const notificationOptions = {
 
-      body: body,
+      body:
+        body,
 
       icon:
         "./icon-192.png",
@@ -198,7 +216,11 @@ messaging.onBackgroundMessage(
         true,
 
       vibrate:
-        [300, 200, 300],
+        [
+          300,
+          200,
+          300
+        ],
 
       data: {
 
@@ -212,8 +234,11 @@ messaging.onBackgroundMessage(
 
 
     return self.registration.showNotification(
+
       title,
+
       notificationOptions
+
     );
 
   }
@@ -249,31 +274,37 @@ self.addEventListener(
 
         })
 
-        .then(clientList => {
+        .then(
+          clientList => {
 
-          for (
-            const client
-            of clientList
-          ) {
+            for(
+              const client
+              of clientList
+            ){
 
-            if ("focus" in client) {
+              if(
+                "focus" in client
+              ){
 
-              return client.focus();
+                return client.focus();
+
+              }
+
+            }
+
+
+            if(
+              clients.openWindow
+            ){
+
+              return clients.openWindow(
+                url
+              );
 
             }
 
           }
-
-
-          if (clients.openWindow) {
-
-            return clients.openWindow(
-              url
-            );
-
-          }
-
-        })
+        )
 
     );
 
