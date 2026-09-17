@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JOB TIME</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #f3f5f8;
+  color: #1f2937;
+}
+
+.header {
+  background: #111827;
+  color: white;
+  padding: 22px 18px;
+  border-radius: 0 0 24px 24px;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 25px;
+}
+
+.header p {
+  margin: 5px 0 0;
+  opacity: .75;
+  font-size: 14px;
+}
+
+.container {
+  padding: 16px;
+  max-width: 600px;
+  margin: auto;
+}
+
+.clock {
+  background: white;
+  padding: 18px;
+  border-radius: 18px;
+  text-align: center;
+  margin-bottom: 16px;
+  box-shadow: 0 3px 12px rgba(0,0,0,.06);
+}
+
+.clock-time {
+  font-size: 34px;
+  font-weight: 700;
+}
+
+.clock-date {
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+.card {
+  background: white;
+  padding: 18px;
+  border-radius: 18px;
+  margin-bottom: 16px;
+  box-shadow: 0 3px 12px rgba(0,0,0,.06);
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.job-number {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.remark {
+  color: #6b7280;
+  margin: 5px 0 12px;
+}
+
+.status {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 13px;
+  margin-bottom: 14px;
+}
+
+.status.working {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status.completed {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.buttons {
+  display: flex;
+  gap: 10px;
+}
+
+button {
+  border: 0;
+  border-radius: 12px;
+  padding: 13px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.start {
+  flex: 1;
+  background: #16a34a;
+  color: white;
+}
+
+.leave {
+  flex: 1;
+  background: #dc2626;
+  color: white;
+}
+
+.add {
+  width: 100%;
+  background: #2563eb;
+  color: white;
+  font-size: 16px;
+}
+
+.job-item {
+  padding: 13px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.job-item:last-child {
+  border-bottom: 0;
+}
+
+.job-item strong {
+  display: block;
+}
+
+.job-item span {
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.nav {
+  position: sticky;
+  bottom: 0;
+  background: white;
+  display: flex;
+  border-top: 1px solid #e5e7eb;
+}
+
+.nav button {
+  flex: 1;
+  background: white;
+  color: #374151;
+  border-radius: 0;
+  padding: 15px 5px;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.5);
+  align-items: flex-end;
+  z-index: 10;
+}
+
+.modal-box {
+  background: white;
+  width: 100%;
+  border-radius: 25px 25px 0 0;
+  padding: 22px;
+}
+
+.modal-box h2 {
+  margin-top: 0;
+}
+
+input {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  font-size: 16px;
+}
+
+.save {
+  width: 100%;
+  background: #2563eb;
+  color: white;
+}
+
+.close {
+  width: 100%;
+  background: #e5e7eb;
+  margin-top: 8px;
+}
+
+.search {
+  margin-bottom: 10px;
+}
+
+.hidden {
+  display: none;
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+  <h1>⏰ JOB TIME</h1>
+  <p>ระบบแจ้งเตือนและบันทึกการปฏิบัติงาน</p>
+</header>
+
+<main class="container">
+
+  <section class="clock">
+    <div class="clock-time" id="clock">00:00:00</div>
+    <div class="clock-date" id="date"></div>
+  </section>
+
+  <section id="homePage">
+
+    <div class="card">
+      <div class="card-title">JOB ปัจจุบัน</div>
+
+      <div id="currentJob">
+        <div style="color:#6b7280;">ยังไม่มี Job ที่กำลังทำ</div>
+      </div>
+    </div>
+
+    <button class="add" onclick="openModal()">
+      ＋ เพิ่ม Job
+    </button>
+
+    <div class="card" style="margin-top:16px;">
+      <div class="card-title">งานวันนี้</div>
+      <div id="todayJobs"></div>
+    </div>
+
+  </section>
+
+  <section id="historyPage" class="hidden">
+
+    <div class="card">
+      <div class="card-title">📚 ประวัติ Job</div>
+
+      <input
+        class="search"
+        id="searchInput"
+        placeholder="ค้นหา Job / Remark..."
+        oninput="showHistory()"
+      >
+
+      <div id="historyList"></div>
+    </div>
+
+  </section>
+
+</main>
+
+<nav class="nav">
+  <button onclick="showHome()">🏠<br>งานวันนี้</button>
+  <button onclick="showHistory()">📚<br>ประวัติ</button>
+</nav>
+
+<!-- ADD JOB MODAL -->
+
+<div class="modal" id="modal">
+
+  <div class="modal-box">
+
+    <h2>＋ เพิ่ม Job</h2>
+
+    <input id="jobNumber" placeholder="เลข Job เช่น JOB-00125">
+
+    <input id="jobDate" type="date">
+
+    <input id="jobTime" type="time">
+
+    <input id="jobRemark" placeholder="Remark / รายละเอียดงาน">
+
+    <button class="save" onclick="saveJob()">
+      บันทึก Job
+    </button>
+
+    <button class="close" onclick="closeModal()">
+      ยกเลิก
+    </button>
+
+  </div>
+
+</div>
+
+<script>
+
+let jobs = JSON.parse(localStorage.getItem("jobs") || "[]");
+
+function saveData() {
+  localStorage.setItem("jobs", JSON.stringify(jobs));
+}
+
+/* CLOCK */
+
+function updateClock() {
+
+  const now = new Date();
+
+  document.getElementById("clock").textContent =
+    now.toLocaleTimeString("th-TH");
+
+  document.getElementById("date").textContent =
+    now.toLocaleDateString("th-TH", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    });
+}
+
+setInterval(updateClock, 1000);
+updateClock();
+
+/* MODAL */
+
+function openModal() {
+
+  document.getElementById("modal").style.display = "flex";
+
+  const now = new Date();
+
+  document.getElementById("jobDate").value =
+    now.toISOString().split("T")[0];
+
+}
+
+function closeModal() {
+  document.getElementById("modal").style.display = "none";
+}
+
+/* SAVE JOB */
+
+function saveJob() {
+
+  const number = document.getElementById("jobNumber").value.trim();
+  const date = document.getElementById("jobDate").value;
+  const time = document.getElementById("jobTime").value;
+  const remark = document.getElementById("jobRemark").value.trim();
+
+  if (!number || !date || !time) {
+    alert("กรุณากรอกเลข Job วันที่ และเวลา");
+    return;
+  }
+
+  const job = {
+
+    id: Date.now(),
+
+    job_number: number,
+
+    date: date,
+
+    time: time,
+
+    remark: remark,
+
+    status: "pending",
+
+    created_at: new Date().toISOString(),
+
+    start_at: null,
+
+    leave_at: null
+
+  };
+
+  jobs.push(job);
+
+  saveData();
+
+  document.getElementById("jobNumber").value = "";
+  document.getElementById("jobTime").value = "";
+  document.getElementById("jobRemark").value = "";
+
+  closeModal();
+
+  render();
+
+  alert("บันทึก Job เรียบร้อยแล้ว");
+
+}
+
+/* START */
+
+function startJob(id) {
+
+  const job = jobs.find(j => j.id === id);
+
+  if (!job) return;
+
+  job.status = "working";
+
+  job.start_at = new Date().toISOString();
+
+  saveData();
+
+  render();
+
+}
+
+/* LEAVE */
+
+function leaveJob(id) {
+
+  const job = jobs.find(j => j.id === id);
+
+  if (!job) return;
+
+  if (!confirm("ยืนยันการ Leave Job นี้?")) return;
+
+  job.status = "completed";
+
+  job.leave_at = new Date().toISOString();
+
+  saveData();
+
+  render();
+
+}
+
+/* DURATION */
+
+function duration(job) {
+
+  if (!job.start_at || !job.leave_at) {
+    return "-";
+  }
+
+  const start = new Date(job.start_at);
+  const end = new Date(job.leave_at);
+
+  const diff = Math.floor((end - start) / 1000);
+
+  const h = Math.floor(diff / 3600);
+
+  const m = Math.floor((diff % 3600) / 60);
+
+  const s = diff % 60;
+
+  return `${h}ชม. ${m}น. ${s}วิ.`;
+
+}
+
+/* CURRENT JOB */
+
+function renderCurrentJob() {
+
+  const box = document.getElementById("currentJob");
+
+  const job =
+    jobs.find(j => j.status === "working") ||
+    jobs.find(j => j.status === "pending");
+
+  if (!job) {
+
+    box.innerHTML =
+      `<div style="color:#6b7280;">
+        ยังไม่มี Job ที่กำลังทำ
+      </div>`;
+
+    return;
+
+  }
+
+  let statusText = "รอเริ่มงาน";
+  let statusClass = "";
+
+  if (job.status === "working") {
+    statusText = "🟢 กำลังทำ";
+    statusClass = "working";
+  }
+
+  box.innerHTML = `
+
+    <div class="job-number">
+      ${job.job_number}
+    </div>
+
+    <div class="remark">
+      ${job.remark || "-"}
+    </div>
+
+    <div class="status ${statusClass}">
+      ${statusText}
+    </div>
+
+    <div class="buttons">
+
+      ${
+        job.status === "pending"
+        ?
+        `<button class="start"
+          onclick="startJob(${job.id})">
+          ▶ START
+        </button>`
+        :
+        ""
+      }
+
+      ${
+        job.status === "working"
+        ?
+        `<button class="leave"
+          onclick="leaveJob(${job.id})">
+          ✓ LEAVE
+        </button>`
+        :
+        ""
+      }
+
+    </div>
+
+  `;
+
+}
+
+/* TODAY */
+
+function renderToday() {
+
+  const box = document.getElementById("todayJobs");
+
+  const today =
+    new Date().toISOString().split("T")[0];
+
+  const list =
+    jobs
+      .filter(j => j.date === today)
+      .sort((a,b) => a.time.localeCompare(b.time));
+
+  if (!list.length) {
+
+    box.innerHTML =
+      `<div style="color:#9ca3af;">
+        วันนี้ยังไม่มี Job
+      </div>`;
+
+    return;
+
+  }
+
+  box.innerHTML = list.map(j => `
+
+    <div class="job-item">
+
+      <strong>
+        ${j.time} — ${j.job_number}
+      </strong>
+
+      <span>
+        ${j.remark || "-"}
+      </span>
+
+    </div>
+
+  `).join("");
+
+}
+
+/* HISTORY */
+
+function showHistory() {
+
+  document.getElementById("homePage")
+    .classList.add("hidden");
+
+  document.getElementById("historyPage")
+    .classList.remove("hidden");
+
+  const search =
+    (document.getElementById("searchInput")?.value || "")
+    .toLowerCase();
+
+  const box =
+    document.getElementById("historyList");
+
+  const list =
+    jobs
+      .filter(j => j.status === "completed")
+      .filter(j =>
+        j.job_number.toLowerCase().includes(search) ||
+        (j.remark || "").toLowerCase().includes(search)
+      )
+      .sort((a,b) => b.id - a.id);
+
+  if (!list.length) {
+
+    box.innerHTML =
+      `<div style="color:#9ca3af;">
+        ยังไม่มีประวัติ Job
+      </div>`;
+
+    return;
+
+  }
+
+  box.innerHTML = list.map(j => `
+
+    <div class="job-item">
+
+      <strong>${j.job_number}</strong>
+
+      <span>
+        ${j.remark || "-"}<br>
+        วันที่: ${j.date}<br>
+        START: ${formatTime(j.start_at)}<br>
+        LEAVE: ${formatTime(j.leave_at)}<br>
+        ระยะเวลา: ${duration(j)}
+      </span>
+
+    </div>
+
+  `).join("");
+
+}
+
+/* FORMAT TIME */
+
+function formatTime(value) {
+
+  if (!value) return "-";
+
+  return new Date(value).toLocaleTimeString("th-TH");
+
+}
+
+/* HOME */
+
+function showHome() {
+
+  document.getElementById("homePage")
+    .classList.remove("hidden");
+
+  document.getElementById("historyPage")
+    .classList.add("hidden");
+
+  render();
+
+}
+
+/* RENDER */
+
+function render() {
+
+  renderCurrentJob();
+
+  renderToday();
+
+}
+
+/* START APP */
+
+render();
+
+</script>
+
+</body>
+</html>
