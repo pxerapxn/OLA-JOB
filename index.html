@@ -34,8 +34,6 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging-compat.js"></script>
 
-<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-installations-compat.js"></script>
-
 
 <script>
 
@@ -74,8 +72,8 @@ const firebaseMessaging =
   firebase.messaging();
 
 
-const firebaseInstallations =
-  firebase.installations();
+const FCM_VAPID_KEY =
+  "BHdcwG22SK0Rqec8MSACS8wYVwnWHuXxrPj-rm4tOVQpvzWpL0COJeEmjy-gF5GmzU0AoorV9dR16DfFVIfAfOI";
 
 </script>
 
@@ -410,6 +408,14 @@ label {
 }
 
 
+.status-error {
+
+  color: #dc2626;
+
+  font-weight: bold;
+}
+
+
 .test-info {
 
   background: #f3e8ff;
@@ -599,17 +605,6 @@ onclick="testNotification()">
 </button>
 
 
-<button
-class="btn-test"
-onclick="testFirebaseInstallations()">
-
-🔧 ตรวจสอบ Firebase Installations
-
-</button>
-
-
-<!-- FCM TOKEN -->
-
 <div
 id="fcmTokenBox"
 style="display:none;">
@@ -663,6 +658,7 @@ onclick="startTestTimer()">
 
 </button>
 
+
 </div>
 
 
@@ -686,7 +682,6 @@ oninput="renderToday()">
 
 
 <div id="todayJobs">
-
 </div>
 
 </div>
@@ -704,7 +699,6 @@ oninput="renderToday()">
 
 
 <div id="history">
-
 </div>
 
 </div>
@@ -823,6 +817,7 @@ function saveData() {
     "notifiedJobs",
     JSON.stringify(notifiedJobs)
   );
+
 }
 
 
@@ -839,7 +834,9 @@ function updateClock() {
   document.getElementById(
     "clock"
   ).textContent =
-    now.toLocaleTimeString("th-TH");
+    now.toLocaleTimeString(
+      "th-TH"
+    );
 
 
   document.getElementById(
@@ -854,6 +851,7 @@ function updateClock() {
         day: "numeric"
       }
     );
+
 }
 
 
@@ -894,6 +892,7 @@ function openModal() {
   ).value =
     now.toTimeString()
       .slice(0,5);
+
 }
 
 
@@ -903,6 +902,7 @@ function closeModal() {
     "jobModal"
   ).style.display =
     "none";
+
 }
 
 
@@ -943,6 +943,7 @@ function saveJob() {
     );
 
     return;
+
   }
 
 
@@ -1007,6 +1008,7 @@ function saveJob() {
 
 
   renderAll();
+
 }
 
 
@@ -1055,6 +1057,7 @@ async function departedJob(id) {
 
 
   renderAll();
+
 }
 
 
@@ -1062,7 +1065,7 @@ async function departedJob(id) {
    ONSITE
 ===================================================== */
 
-async function onsiteJob(id) {
+function onsiteJob(id) {
 
   const job =
     jobs.find(
@@ -1088,6 +1091,7 @@ async function onsiteJob(id) {
 
 
   renderAll();
+
 }
 
 
@@ -1095,7 +1099,7 @@ async function onsiteJob(id) {
    DONE
 ===================================================== */
 
-async function doneJob(id) {
+function doneJob(id) {
 
   const job =
     jobs.find(
@@ -1121,6 +1125,7 @@ async function doneJob(id) {
 
 
   renderAll();
+
 }
 
 
@@ -1162,6 +1167,7 @@ function leaveJob(id) {
     " เสร็จสิ้นแล้ว"
 
   );
+
 }
 
 
@@ -1262,6 +1268,7 @@ function targetTime(job) {
 
 
   return null;
+
 }
 
 
@@ -1320,6 +1327,7 @@ function countdown(job) {
       .padStart(2,"0")
 
   );
+
 }
 
 
@@ -1353,6 +1361,7 @@ function statusText(status) {
     map[status] ||
     status
   );
+
 }
 
 
@@ -1384,6 +1393,7 @@ function renderCurrentJob() {
       '</div>';
 
     return;
+
   }
 
 
@@ -1528,6 +1538,7 @@ function renderCurrentJob() {
 
   container.innerHTML =
     html;
+
 }
 
 
@@ -1597,6 +1608,7 @@ function renderToday() {
       '</div>';
 
     return;
+
   }
 
 
@@ -1640,6 +1652,7 @@ function renderToday() {
       </div>
 
     `).join("");
+
 }
 
 
@@ -1671,6 +1684,7 @@ function renderHistory() {
       '</div>';
 
     return;
+
   }
 
 
@@ -1718,87 +1732,52 @@ function renderHistory() {
 
       `)
       .join("");
+
 }
 
 
 /* =====================================================
-   TEST FIREBASE INSTALLATIONS
+   REGISTER FCM SERVICE WORKER
 ===================================================== */
 
-async function testFirebaseInstallations() {
+async function getFCMServiceWorker() {
 
-  try {
+  if (
+    !("serviceWorker" in navigator)
+  ) {
 
-    console.log(
-      "Firebase Config:",
-      firebaseConfig
-    );
-
-
-    console.log(
-      "Firebase Project ID:",
-      firebaseConfig.projectId
-    );
-
-
-    console.log(
-      "Firebase App ID:",
-      firebaseConfig.appId
-    );
-
-
-    console.log(
-      "Firebase API Key:",
-      firebaseConfig.apiKey
-    );
-
-
-    const installationId =
-      await firebaseInstallations.getId();
-
-
-    console.log(
-      "Firebase Installation ID:",
-      installationId
-    );
-
-
-    alert(
-
-      "✅ Firebase Installations ใช้งานได้\n\n" +
-
-      "Installation ID:\n" +
-
-      installationId
-
-    );
-
-
-  }
-
-  catch(error) {
-
-    console.error(
-      "Firebase Installations Test Error:",
-      error
-    );
-
-
-    alert(
-
-      "❌ Firebase Installations ยังมีปัญหา\n\n" +
-
-      error.message
-
+    throw new Error(
+      "อุปกรณ์นี้ไม่รองรับ Service Worker"
     );
 
   }
+
+
+  const registration =
+    await navigator.serviceWorker.register(
+      "./firebase-messaging-sw.js",
+      {
+        scope: "./"
+      }
+    );
+
+
+  await navigator.serviceWorker.ready;
+
+
+  console.log(
+    "Firebase Messaging Service Worker พร้อมใช้งาน",
+    registration
+  );
+
+
+  return registration;
 
 }
 
 
 /* =====================================================
-   ENABLE NOTIFICATION
+   ENABLE NOTIFICATIONS
 ===================================================== */
 
 async function enableNotifications() {
@@ -1834,6 +1813,11 @@ async function enableNotifications() {
 
   try {
 
+
+    /* ---------------------------------------------
+       REQUEST PERMISSION
+    --------------------------------------------- */
+
     let permission =
       Notification.permission;
 
@@ -1861,38 +1845,28 @@ async function enableNotifications() {
     }
 
 
-    updateNotificationStatus();
-
-
-    /* =================================================
-       FIREBASE MESSAGING SERVICE WORKER
-    ================================================= */
+    /* ---------------------------------------------
+       REGISTER FCM SERVICE WORKER
+    --------------------------------------------- */
 
     const registration =
-      await navigator.serviceWorker.register(
-
-        "./firebase-messaging-sw.js",
-
-        {
-          scope: "./"
-        }
-
-      );
+      await getFCMServiceWorker();
 
 
-    await navigator.serviceWorker.ready;
+    /* ---------------------------------------------
+       GET FCM TOKEN
+    --------------------------------------------- */
 
+    console.log(
+      "กำลังขอ Firebase FCM Token..."
+    );
 
-    /* =================================================
-       FIREBASE TOKEN
-    ================================================= */
 
     const token =
       await firebaseMessaging.getToken({
 
         vapidKey:
-
-          "BHdcwG22SK0Rqec8MSACS8wYVwnWHuXxrPj-rm4tOVQpvzWpL0COJeEmjy-gF5GmzU0AoorV9dR16DfFVIfAfOI",
+          FCM_VAPID_KEY,
 
         serviceWorkerRegistration:
           registration
@@ -1900,63 +1874,58 @@ async function enableNotifications() {
       });
 
 
-    if (token) {
+    if (!token) {
 
-      console.log(
-        "JOB TIME FCM TOKEN:",
-        token
-      );
-
-
-      localStorage.setItem(
-        "fcmToken",
-        token
-      );
-
-
-      showFCMToken(
-        token
-      );
-
-
-      const status =
-        document.getElementById(
-          "notificationStatus"
-        );
-
-
-      status.innerHTML =
-
-        '<span class="status-ok">' +
-
-        '🟢 เปิดใช้งานการแจ้งเตือนแล้ว' +
-
-        '<br><span class="small">' +
-
-        'Firebase Push พร้อมใช้งาน' +
-
-        '</span>' +
-
-        '</span>';
-
-    }
-
-
-    else {
-
-      console.warn(
-        "ไม่พบ FCM Token"
+      throw new Error(
+        "Firebase ไม่ส่ง Registration Token กลับมา"
       );
 
     }
+
+
+    console.log(
+      "JOB TIME FCM TOKEN:",
+      token
+    );
+
+
+    localStorage.setItem(
+      "fcmToken",
+      token
+    );
+
+
+    showFCMToken(
+      token
+    );
+
+
+    const status =
+      document.getElementById(
+        "notificationStatus"
+      );
+
+
+    status.innerHTML =
+
+      '<span class="status-ok">' +
+
+      '🟢 เปิดใช้งานการแจ้งเตือนแล้ว' +
+
+      '<br><span class="small">' +
+
+      'Firebase Push พร้อมใช้งาน' +
+
+      '</span>' +
+
+      '</span>';
 
 
     return true;
 
 
-  }
+  } catch(error) {
 
-  catch(error) {
 
     console.error(
       "Firebase Notification Error:",
@@ -1964,11 +1933,37 @@ async function enableNotifications() {
     );
 
 
+    const message =
+      error?.message ||
+      String(error);
+
+
+    document.getElementById(
+      "notificationStatus"
+    ).innerHTML =
+
+      '<span class="status-error">' +
+
+      '🔴 เชื่อมต่อ Firebase ไม่สำเร็จ' +
+
+      '</span>' +
+
+      '<br>' +
+
+      '<span class="small">' +
+
+      escapeHTML(
+        message
+      ) +
+
+      '</span>';
+
+
     alert(
 
       "ไม่สามารถเชื่อมต่อ Firebase Notification ได้\n\n" +
 
-      error.message
+      message
 
     );
 
@@ -1981,7 +1976,7 @@ async function enableNotifications() {
 
 
 /* =====================================================
-   SHOW FCM TOKEN
+   SHOW TOKEN
 ===================================================== */
 
 function showFCMToken(token) {
@@ -1998,7 +1993,10 @@ function showFCMToken(token) {
     );
 
 
-  if (!box || !input) {
+  if (
+    !box ||
+    !input
+  ) {
 
     return;
 
@@ -2018,7 +2016,7 @@ function showFCMToken(token) {
 
 
 /* =====================================================
-   COPY FCM TOKEN
+   COPY TOKEN
 ===================================================== */
 
 async function copyFCMToken() {
@@ -2055,9 +2053,7 @@ async function copyFCMToken() {
     );
 
 
-  }
-
-  catch(error) {
+  } catch(error) {
 
     input.select();
 
@@ -2108,13 +2104,40 @@ function updateNotificationStatus() {
     "granted"
   ) {
 
-    element.innerHTML =
+    const savedToken =
+      localStorage.getItem(
+        "fcmToken"
+      );
 
-      '<span class="status-ok">' +
 
-      '🟢 เปิดใช้งานการแจ้งเตือนแล้ว' +
+    if (savedToken) {
 
-      '</span>';
+      element.innerHTML =
+
+        '<span class="status-ok">' +
+
+        '🟢 เปิดใช้งานการแจ้งเตือนแล้ว' +
+
+        '</span>';
+
+    }
+
+    else {
+
+      element.innerHTML =
+
+        '🟡 อนุญาต Notification แล้ว' +
+
+        '<br>' +
+
+        '<span class="small">' +
+
+        'กดเปิดใช้งานเพื่อเชื่อมต่อ Firebase' +
+
+        '</span>';
+
+    }
+
 
   }
 
@@ -2124,8 +2147,13 @@ function updateNotificationStatus() {
     "denied"
   ) {
 
-    element.textContent =
-      "🔴 การแจ้งเตือนถูกปิด";
+    element.innerHTML =
+
+      '<span class="status-error">' +
+
+      '🔴 การแจ้งเตือนถูกปิด' +
+
+      '</span>';
 
   }
 
@@ -2157,74 +2185,61 @@ async function testNotification() {
   }
 
 
-  if (
-    "serviceWorker" in navigator
-  ) {
-
-    try {
-
-      const registration =
-        await navigator.serviceWorker.register(
-
-          "./firebase-messaging-sw.js",
-
-          {
-            scope: "./"
-          }
-
-        );
+  try {
 
 
-      await registration.showNotification(
-
-        "🔔 JOB TIME",
-
-        {
-
-          body:
-            "ทดสอบแจ้งเตือนสำเร็จ!",
-
-          tag:
-            "job-time-test",
-
-          requireInteraction:
-            true,
-
-          vibrate:
-            [300,200,300]
-
-        }
-
-      );
+    const registration =
+      await getFCMServiceWorker();
 
 
-      showBanner(
+    await registration.showNotification(
 
-        "🔔 ทดสอบสำเร็จ",
+      "🔔 JOB TIME",
 
-        "JOB TIME ส่ง Notification แล้ว"
+      {
 
-      );
+        body:
+          "ทดสอบแจ้งเตือนสำเร็จ!",
+
+        tag:
+          "job-time-test-" +
+          Date.now(),
+
+        requireInteraction:
+          true,
+
+        vibrate:
+          [300,200,300]
+
+      }
+
+    );
 
 
-    }
+    showBanner(
 
-    catch(error) {
+      "🔔 ทดสอบสำเร็จ",
 
-      console.error(
-        error
-      );
+      "JOB TIME ส่ง Notification แล้ว"
+
+    );
 
 
-      alert(
+  } catch(error) {
 
-        "ไม่สามารถส่ง Notification ผ่าน Service Worker ได้\n\n" +
 
-        error.message
+    console.error(
+      error
+    );
 
-      );
 
-    }
+    alert(
+
+      "ไม่สามารถส่ง Notification ผ่าน Service Worker ได้\n\n" +
+
+      error.message
+
+    );
 
   }
 
@@ -2558,7 +2573,7 @@ setInterval(
 
 
 /* =====================================================
-   SEND NOTIFICATION
+   SEND LOCAL NOTIFICATION
 ===================================================== */
 
 function notifyUser(
@@ -2831,76 +2846,79 @@ function renderAll() {
 
 
 /* =====================================================
-   MAIN SERVICE WORKER
+   SERVICE WORKER
 ===================================================== */
 
 if (
   "serviceWorker" in navigator
 ) {
 
-
   window.addEventListener(
     "load",
-    () => {
+    async () => {
 
+      try {
 
-      navigator
-        .serviceWorker
-        .register(
-          "./service-worker.js"
-        )
+        /*
+         * ลงทะเบียน Firebase Messaging SW
+         */
 
-
-        .then(
-          registration => {
-
-
-            console.log(
-
-              "JOB TIME Service Worker พร้อมใช้งาน",
-
-              registration
-
-            );
-
-
-            const savedToken =
-              localStorage.getItem(
-                "fcmToken"
-              );
-
-
-            if (savedToken) {
-
-              showFCMToken(
-                savedToken
-              );
-
-            }
-
+        await navigator.serviceWorker.register(
+          "./firebase-messaging-sw.js",
+          {
+            scope: "./"
           }
-
-        )
-
-
-        .catch(
-          error => {
-
-
-            console.error(
-
-              "Service Worker Error:",
-
-              error
-
-            );
-
-          }
-
         );
 
-    }
 
+        console.log(
+          "Firebase Messaging Service Worker พร้อมใช้งาน"
+        );
+
+
+        /*
+         * ลงทะเบียน JOB TIME SW
+         */
+
+        await navigator.serviceWorker.register(
+          "./service-worker.js"
+        );
+
+
+        console.log(
+          "JOB TIME Service Worker พร้อมใช้งาน"
+        );
+
+
+        /*
+         * แสดง Token เดิม
+         */
+
+        const savedToken =
+          localStorage.getItem(
+            "fcmToken"
+          );
+
+
+        if (savedToken) {
+
+          showFCMToken(
+            savedToken
+          );
+
+        }
+
+
+      } catch(error) {
+
+        console.error(
+          "Service Worker Error:",
+          error
+        );
+
+      }
+
+    }
   );
 
 }
