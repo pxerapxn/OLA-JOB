@@ -1,22 +1,43 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<link rel="manifest" href="./manifest.json">
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<meta name="theme-color"
+      content="#111827">
+
+<meta name="apple-mobile-web-app-capable"
+      content="yes">
+
+<meta name="apple-mobile-web-app-status-bar-style"
+      content="default">
+
+<meta name="apple-mobile-web-app-title"
+      content="JOB TIME">
+
+<link rel="manifest"
+      href="./manifest.json">
 
 <title>JOB TIME</title>
 
 <style>
+
 * {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
   background: #f4f6f8;
   color: #222;
 }
@@ -49,7 +70,8 @@ header p {
   border-radius: 18px;
   padding: 18px;
   margin-bottom: 15px;
-  box-shadow: 0 3px 12px rgba(0,0,0,.08);
+  box-shadow:
+    0 3px 12px rgba(0,0,0,.08);
 }
 
 .clock {
@@ -63,6 +85,7 @@ header p {
 
 #date {
   color: #666;
+  margin-top: 5px;
 }
 
 h2 {
@@ -90,7 +113,7 @@ h2 {
 
 .countdown {
   text-align: center;
-  font-size: 38px;
+  font-size: 40px;
   font-weight: bold;
   margin: 15px 0;
 }
@@ -103,7 +126,6 @@ button {
   margin-top: 8px;
   font-size: 16px;
   font-weight: bold;
-  cursor: pointer;
 }
 
 .btn-main {
@@ -134,6 +156,11 @@ button {
 .btn-test {
   background: #7c3aed;
   color: white;
+}
+
+.btn-gray {
+  background: #e5e7eb;
+  color: #111;
 }
 
 input,
@@ -171,11 +198,6 @@ label {
   padding: 20px;
 }
 
-.notification-test {
-  background: #faf5ff;
-  border: 1px solid #ddd6fe;
-}
-
 .modal {
   display: none;
   position: fixed;
@@ -198,142 +220,305 @@ label {
   color: #777;
 }
 
-.tabs {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 15px;
+.notification-box {
+  background: #faf5ff;
+  border: 1px solid #ddd6fe;
 }
 
-.tabs button {
-  margin: 0;
-  background: #e5e7eb;
-  color: #222;
+.status-ok {
+  font-weight: bold;
 }
 
-.tabs button.active {
+.test-info {
+  background: #f3e8ff;
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.banner {
+  position: fixed;
+  left: 15px;
+  right: 15px;
+  bottom: 20px;
+  z-index: 9999;
   background: #111827;
   color: white;
+  padding: 18px;
+  border-radius: 16px;
+  box-shadow:
+    0 5px 20px rgba(0,0,0,.3);
 }
+
+.banner strong {
+  font-size: 17px;
+}
+
+.banner button {
+  background: white;
+  color: #111827;
+}
+
 </style>
+
 </head>
 
 <body>
 
 <header>
-  <h1>⏰ JOB TIME</h1>
-  <p>ระบบแจ้งเตือนการปฏิบัติงาน</p>
+
+<h1>⏰ JOB TIME</h1>
+
+<p>
+ระบบแจ้งเตือนการปฏิบัติงาน
+</p>
+
 </header>
+
 
 <div class="container">
 
-  <!-- CLOCK -->
-  <div class="card clock">
-    <div id="clock">00:00:00</div>
-    <div id="date">-</div>
-  </div>
 
-  <!-- CURRENT JOB -->
-  <div class="card">
-    <h2>📌 JOB ปัจจุบัน</h2>
-    <div id="currentJob">
-      <div class="empty">ยังไม่มี JOB ที่กำลังทำงาน</div>
-    </div>
-  </div>
+<!-- CLOCK -->
 
-  <!-- ADD JOB -->
-  <div class="card">
-    <button class="btn-main" onclick="openModal()">
-      ＋ เพิ่ม Job
-    </button>
-  </div>
+<div class="card clock">
 
-  <!-- NOTIFICATION -->
-  <div class="card notification-test">
-    <h2>🔔 ระบบแจ้งเตือน</h2>
+<div id="clock">
+00:00:00
+</div>
 
-    <p class="small">
-      กดปุ่มด้านล่างเพื่อทดสอบว่าอุปกรณ์สามารถแสดงการแจ้งเตือนได้หรือไม่
-    </p>
-
-    <button class="btn-test" onclick="testNotification()">
-      🔔 ทดสอบแจ้งเตือนทันที
-    </button>
-
-    <button class="btn-test" onclick="startTestTimer()">
-      🧪 TEST TIMER
-    </button>
-  </div>
-
-  <!-- TODAY -->
-  <div class="card">
-    <h2>📅 งานวันนี้</h2>
-
-    <input
-      class="search"
-      id="searchInput"
-      type="text"
-      placeholder="🔎 ค้นหา Job หรือ Remark"
-      oninput="renderToday()"
-    >
-
-    <div id="todayJobs"></div>
-  </div>
-
-  <!-- HISTORY -->
-  <div class="card">
-    <h2>📚 ประวัติ JOB</h2>
-
-    <div id="history"></div>
-  </div>
+<div id="date">
+-
+</div>
 
 </div>
+
+
+<!-- CURRENT JOB -->
+
+<div class="card">
+
+<h2>
+📌 JOB ปัจจุบัน
+</h2>
+
+<div id="currentJob">
+
+<div class="empty">
+ยังไม่มี JOB ที่กำลังทำงาน
+</div>
+
+</div>
+
+</div>
+
+
+<!-- ADD JOB -->
+
+<div class="card">
+
+<button
+class="btn-main"
+onclick="openModal()">
+
+＋ เพิ่ม Job
+
+</button>
+
+</div>
+
+
+<!-- NOTIFICATION -->
+
+<div class="card notification-box">
+
+<h2>
+🔔 ระบบแจ้งเตือน
+</h2>
+
+<p id="notificationStatus">
+กำลังตรวจสอบสถานะ...
+</p>
+
+<button
+class="btn-test"
+onclick="enableNotifications()">
+
+🔔 เปิดใช้งานการแจ้งเตือน
+
+</button>
+
+<button
+class="btn-test"
+onclick="testNotification()">
+
+🧪 ทดสอบแจ้งเตือนทันที
+
+</button>
+
+<div class="test-info">
+
+<b>TEST TIMER</b>
+
+<br><br>
+
+DEPARTED → 10 วินาที → ONSITE
+
+<br>
+
+ONSITE → 20 วินาที → DONE
+
+<br>
+
+DONE → 10 วินาที → LEAVE
+
+</div>
+
+<button
+class="btn-test"
+onclick="startTestTimer()">
+
+🧪 เริ่ม TEST TIMER
+
+</button>
+
+</div>
+
+
+<!-- TODAY -->
+
+<div class="card">
+
+<h2>
+📅 งานวันนี้
+</h2>
+
+<input
+id="searchInput"
+class="search"
+type="text"
+placeholder="🔎 ค้นหา Job หรือ Remark"
+oninput="renderToday()">
+
+<div id="todayJobs">
+
+</div>
+
+</div>
+
+
+<!-- HISTORY -->
+
+<div class="card">
+
+<h2>
+📚 ประวัติ JOB
+</h2>
+
+<div id="history">
+
+</div>
+
+</div>
+
+
+</div>
+
 
 <!-- ADD JOB MODAL -->
-<div class="modal" id="jobModal">
 
-  <div class="modal-box">
+<div
+class="modal"
+id="jobModal">
 
-    <h2>＋ เพิ่ม Job</h2>
+<div class="modal-box">
 
-    <label>เลข Job</label>
-    <input id="jobNumber" placeholder="เช่น JOB-00125">
+<h2>
+＋ เพิ่ม Job
+</h2>
 
-    <label>วันที่</label>
-    <input id="jobDate" type="date">
+<label>
+เลข Job
+</label>
 
-    <label>เวลา</label>
-    <input id="jobTime" type="time">
+<input
+id="jobNumber"
+placeholder="เช่น JOB-00125">
 
-    <label>Remark</label>
-    <textarea
-      id="jobRemark"
-      rows="3"
-      placeholder="รายละเอียดงาน"
-    ></textarea>
 
-    <button class="btn-green" onclick="saveJob()">
-      💾 บันทึก Job
-    </button>
+<label>
+วันที่
+</label>
 
-    <button class="btn-red" onclick="closeModal()">
-      ยกเลิก
-    </button>
+<input
+id="jobDate"
+type="date">
 
-  </div>
+
+<label>
+เวลา
+</label>
+
+<input
+id="jobTime"
+type="time">
+
+
+<label>
+Remark
+</label>
+
+<textarea
+id="jobRemark"
+rows="3"
+placeholder="รายละเอียดงาน">
+</textarea>
+
+
+<button
+class="btn-green"
+onclick="saveJob()">
+
+💾 บันทึก Job
+
+</button>
+
+
+<button
+class="btn-red"
+onclick="closeModal()">
+
+ยกเลิก
+
+</button>
 
 </div>
+
+</div>
+
 
 <script>
 
-let jobs = JSON.parse(localStorage.getItem("jobs") || "[]");
+/* =====================================================
+   DATA
+===================================================== */
+
+let jobs =
+JSON.parse(
+  localStorage.getItem("jobs") || "[]"
+);
+
 
 let notifiedJobs =
-  JSON.parse(localStorage.getItem("notifiedJobs") || "[]");
+JSON.parse(
+  localStorage.getItem("notifiedJobs") || "[]"
+);
 
 
-// =====================================================
-// SAVE DATA
-// =====================================================
+/* =====================================================
+   SAVE
+===================================================== */
 
 function saveData() {
 
@@ -349,18 +534,23 @@ function saveData() {
 }
 
 
-// =====================================================
-// CLOCK
-// =====================================================
+/* =====================================================
+   CLOCK
+===================================================== */
 
 function updateClock() {
 
-  const now = new Date();
+  const now =
+    new Date();
 
-  document.getElementById("clock").textContent =
+  document.getElementById(
+    "clock"
+  ).textContent =
     now.toLocaleTimeString("th-TH");
 
-  document.getElementById("date").textContent =
+  document.getElementById(
+    "date"
+  ).textContent =
     now.toLocaleDateString(
       "th-TH",
       {
@@ -372,57 +562,89 @@ function updateClock() {
     );
 }
 
-setInterval(updateClock,1000);
+setInterval(
+  updateClock,
+  1000
+);
 
 updateClock();
 
 
-// =====================================================
-// MODAL
-// =====================================================
+/* =====================================================
+   MODAL
+===================================================== */
 
 function openModal() {
 
-  document.getElementById("jobModal").style.display = "block";
+  document.getElementById(
+    "jobModal"
+  ).style.display =
+    "block";
 
-  const now = new Date();
 
-  document.getElementById("jobDate").value =
-    now.toISOString().split("T")[0];
+  const now =
+    new Date();
 
-  document.getElementById("jobTime").value =
-    now.toTimeString().slice(0,5);
+
+  document.getElementById(
+    "jobDate"
+  ).value =
+    now.toISOString()
+      .split("T")[0];
+
+
+  document.getElementById(
+    "jobTime"
+  ).value =
+    now.toTimeString()
+      .slice(0,5);
 }
 
 
 function closeModal() {
 
-  document.getElementById("jobModal").style.display = "none";
+  document.getElementById(
+    "jobModal"
+  ).style.display =
+    "none";
 }
 
 
-// =====================================================
-// ADD JOB
-// =====================================================
+/* =====================================================
+   SAVE JOB
+===================================================== */
 
 function saveJob() {
 
   const jobNumber =
-    document.getElementById("jobNumber").value.trim();
+    document.getElementById(
+      "jobNumber"
+    ).value.trim();
+
 
   const date =
-    document.getElementById("jobDate").value;
+    document.getElementById(
+      "jobDate"
+    ).value;
+
 
   const time =
-    document.getElementById("jobTime").value;
+    document.getElementById(
+      "jobTime"
+    ).value;
+
 
   const remark =
-    document.getElementById("jobRemark").value.trim();
+    document.getElementById(
+      "jobRemark"
+    ).value.trim();
 
 
   if (!jobNumber) {
 
-    alert("กรุณาใส่เลข Job");
+    alert(
+      "กรุณาใส่เลข Job"
+    );
 
     return;
   }
@@ -430,27 +652,41 @@ function saveJob() {
 
   const job = {
 
-    id: Date.now().toString(),
+    id:
+      Date.now().toString(),
 
-    job_number: jobNumber,
+    job_number:
+      jobNumber,
 
-    date: date,
+    date:
+      date,
 
-    time: time,
+    time:
+      time,
 
-    remark: remark,
+    remark:
+      remark,
 
-    status: "pending",
+    status:
+      "pending",
 
-    created_at: new Date().toISOString(),
+    created_at:
+      new Date().toISOString(),
 
-    departed_at: null,
+    departed_at:
+      null,
 
-    onsite_at: null,
+    onsite_at:
+      null,
 
-    done_at: null,
+    done_at:
+      null,
 
-    leave_at: null
+    leave_at:
+      null,
+
+    test_mode:
+      false
 
   };
 
@@ -461,30 +697,49 @@ function saveJob() {
 
   closeModal();
 
-  document.getElementById("jobNumber").value = "";
-  document.getElementById("jobRemark").value = "";
+
+  document.getElementById(
+    "jobNumber"
+  ).value = "";
+
+
+  document.getElementById(
+    "jobRemark"
+  ).value = "";
+
 
   renderAll();
 }
 
 
-// =====================================================
-// DEPARTED
-// =====================================================
+/* =====================================================
+   DEPARTED
+===================================================== */
 
 async function departedJob(id) {
 
-  await requestNotificationPermission();
+  await enableNotifications();
 
-  const job = jobs.find(j => j.id === id);
+
+  const job =
+    jobs.find(
+      j => j.id === id
+    );
+
 
   if (!job) return;
 
 
-  job.status = "departed";
+  job.status =
+    "departed";
+
 
   job.departed_at =
     new Date().toISOString();
+
+
+  job.test_mode =
+    false;
 
 
   resetNotification(job);
@@ -495,20 +750,24 @@ async function departedJob(id) {
 }
 
 
-// =====================================================
-// ONSITE
-// =====================================================
+/* =====================================================
+   ONSITE
+===================================================== */
 
 async function onsiteJob(id) {
 
-  await requestNotificationPermission();
+  const job =
+    jobs.find(
+      j => j.id === id
+    );
 
-  const job = jobs.find(j => j.id === id);
 
   if (!job) return;
 
 
-  job.status = "onsite";
+  job.status =
+    "onsite";
+
 
   job.onsite_at =
     new Date().toISOString();
@@ -522,20 +781,24 @@ async function onsiteJob(id) {
 }
 
 
-// =====================================================
-// DONE
-// =====================================================
+/* =====================================================
+   DONE
+===================================================== */
 
 async function doneJob(id) {
 
-  await requestNotificationPermission();
+  const job =
+    jobs.find(
+      j => j.id === id
+    );
 
-  const job = jobs.find(j => j.id === id);
 
   if (!job) return;
 
 
-  job.status = "done";
+  job.status =
+    "done";
+
 
   job.done_at =
     new Date().toISOString();
@@ -549,18 +812,24 @@ async function doneJob(id) {
 }
 
 
-// =====================================================
-// LEAVE
-// =====================================================
+/* =====================================================
+   LEAVE
+===================================================== */
 
-async function leaveJob(id) {
+function leaveJob(id) {
 
-  const job = jobs.find(j => j.id === id);
+  const job =
+    jobs.find(
+      j => j.id === id
+    );
+
 
   if (!job) return;
 
 
-  job.status = "completed";
+  job.status =
+    "completed";
+
 
   job.leave_at =
     new Date().toISOString();
@@ -570,70 +839,116 @@ async function leaveJob(id) {
 
   renderAll();
 
+
   notifyUser(
-    "JOB TIME",
-    "JOB " + job.job_number + " เสร็จสิ้นแล้ว"
+
+    "🏁 JOB TIME",
+
+    "JOB " +
+    job.job_number +
+    " เสร็จสิ้นแล้ว"
+
   );
 }
 
 
-// =====================================================
-// TARGET TIME
-// =====================================================
+/* =====================================================
+   TARGET TIME
+===================================================== */
 
 function targetTime(job) {
 
-  /*
-    TEST MODE
-    departed = 10 sec
-    onsite   = 20 sec
-    done     = 10 sec
-  */
+
+  /* TEST MODE */
 
   if (job.test_mode) {
 
-    if (job.status === "departed") {
 
-      return new Date(job.departed_at).getTime()
-        + 10 * 1000;
+    if (
+      job.status ===
+      "departed"
+    ) {
+
+      return new Date(
+        job.departed_at
+      ).getTime()
+      +
+      10 * 1000;
+
     }
 
-    if (job.status === "onsite") {
 
-      return new Date(job.onsite_at).getTime()
-        + 20 * 1000;
+    if (
+      job.status ===
+      "onsite"
+    ) {
+
+      return new Date(
+        job.onsite_at
+      ).getTime()
+      +
+      20 * 1000;
+
     }
 
-    if (job.status === "done") {
 
-      return new Date(job.done_at).getTime()
-        + 10 * 1000;
+    if (
+      job.status ===
+      "done"
+    ) {
+
+      return new Date(
+        job.done_at
+      ).getTime()
+      +
+      10 * 1000;
+
     }
 
-    return null;
   }
 
 
-  // REAL MODE
+  /* REAL MODE */
 
-  if (job.status === "departed") {
+  if (
+    job.status ===
+    "departed"
+  ) {
 
-    return new Date(job.departed_at).getTime()
-      + 40 * 60 * 1000;
+    return new Date(
+      job.departed_at
+    ).getTime()
+    +
+    40 * 60 * 1000;
+
   }
 
 
-  if (job.status === "onsite") {
+  if (
+    job.status ===
+    "onsite"
+  ) {
 
-    return new Date(job.onsite_at).getTime()
-      + 115 * 60 * 1000;
+    return new Date(
+      job.onsite_at
+    ).getTime()
+    +
+    115 * 60 * 1000;
+
   }
 
 
-  if (job.status === "done") {
+  if (
+    job.status ===
+    "done"
+  ) {
 
-    return new Date(job.done_at).getTime()
-      + 25 * 60 * 1000;
+    return new Date(
+      job.done_at
+    ).getTime()
+    +
+    25 * 60 * 1000;
+
   }
 
 
@@ -641,15 +956,19 @@ function targetTime(job) {
 }
 
 
-// =====================================================
-// COUNTDOWN
-// =====================================================
+/* =====================================================
+   COUNTDOWN
+===================================================== */
 
 function countdown(job) {
 
-  const target = targetTime(job);
+  const target =
+    targetTime(job);
 
-  if (!target) return "";
+
+  if (!target) {
+    return "";
+  }
 
 
   const remaining =
@@ -660,68 +979,92 @@ function countdown(job) {
 
 
   const totalSeconds =
-    Math.floor(remaining / 1000);
+    Math.floor(
+      remaining / 1000
+    );
 
 
   const minutes =
-    Math.floor(totalSeconds / 60);
+    Math.floor(
+      totalSeconds / 60
+    );
 
 
   const seconds =
     totalSeconds % 60;
 
 
-  return String(minutes).padStart(2,"0")
-    + ":"
-    + String(seconds).padStart(2,"0");
+  return (
+    String(minutes)
+      .padStart(2,"0")
+    +
+    ":"
+    +
+    String(seconds)
+      .padStart(2,"0")
+  );
 }
 
 
-// =====================================================
-// STATUS TEXT
-// =====================================================
+/* =====================================================
+   STATUS
+===================================================== */
 
 function statusText(status) {
 
   const map = {
 
-    pending: "รอออกเดินทาง",
+    pending:
+      "รอออกเดินทาง",
 
-    departed: "🚗 กำลังเดินทาง",
+    departed:
+      "🚗 กำลังเดินทาง",
 
-    onsite: "📍 ถึงหน้างานแล้ว",
+    onsite:
+      "📍 ถึงหน้างานแล้ว",
 
-    done: "✅ ทำงานเสร็จแล้ว",
+    done:
+      "✅ ทำงานเสร็จแล้ว",
 
-    completed: "🏁 เสร็จสิ้น"
+    completed:
+      "🏁 เสร็จสิ้น"
 
   };
 
 
-  return map[status] || status;
+  return (
+    map[status] ||
+    status
+  );
 }
 
 
-// =====================================================
-// CURRENT JOB
-// =====================================================
+/* =====================================================
+   CURRENT JOB
+===================================================== */
 
 function renderCurrentJob() {
 
   const container =
-    document.getElementById("currentJob");
+    document.getElementById(
+      "currentJob"
+    );
 
 
   const active =
-    jobs.find(j =>
-      j.status !== "completed"
+    jobs.find(
+      j =>
+        j.status !==
+        "completed"
     );
 
 
   if (!active) {
 
     container.innerHTML =
-      '<div class="empty">ยังไม่มี JOB ที่กำลังทำงาน</div>';
+      '<div class="empty">' +
+      'ยังไม่มี JOB ที่กำลังทำงาน' +
+      '</div>';
 
     return;
   }
@@ -730,107 +1073,151 @@ function renderCurrentJob() {
   let html = `
 
     <div class="job-number">
-      ${escapeHTML(active.job_number)}
+
+      ${escapeHTML(
+        active.job_number
+      )}
+
     </div>
 
     <div class="remark">
-      ${escapeHTML(active.remark || "-")}
+
+      ${escapeHTML(
+        active.remark || "-"
+      )}
+
     </div>
 
     <div class="status">
-      ${statusText(active.status)}
+
+      ${statusText(
+        active.status
+      )}
+
     </div>
+
   `;
 
 
   if (
-    active.status === "departed" ||
-    active.status === "onsite" ||
-    active.status === "done"
+    active.status ===
+      "departed" ||
+
+    active.status ===
+      "onsite" ||
+
+    active.status ===
+      "done"
   ) {
 
     html += `
 
       <div class="countdown">
+
         ${countdown(active)}
+
       </div>
 
     `;
+
   }
 
 
-  if (active.status === "pending") {
+  if (
+    active.status ===
+    "pending"
+  ) {
 
     html += `
 
       <button
         class="btn-blue"
-        onclick="departedJob('${active.id}')"
-      >
+        onclick="departedJob('${active.id}')">
+
         🚗 DEPARTED
+
       </button>
 
     `;
+
   }
 
 
-  if (active.status === "departed") {
+  if (
+    active.status ===
+    "departed"
+  ) {
 
     html += `
 
       <button
         class="btn-green"
-        onclick="onsiteJob('${active.id}')"
-      >
+        onclick="onsiteJob('${active.id}')">
+
         📍 ONSITE
+
       </button>
 
     `;
+
   }
 
 
-  if (active.status === "onsite") {
+  if (
+    active.status ===
+    "onsite"
+  ) {
 
     html += `
 
       <button
         class="btn-orange"
-        onclick="doneJob('${active.id}')"
-      >
+        onclick="doneJob('${active.id}')">
+
         ✅ DONE
+
       </button>
 
     `;
+
   }
 
 
-  if (active.status === "done") {
+  if (
+    active.status ===
+    "done"
+  ) {
 
     html += `
 
       <button
         class="btn-red"
-        onclick="leaveJob('${active.id}')"
-      >
+        onclick="leaveJob('${active.id}')">
+
         🚪 LEAVE
+
       </button>
 
     `;
+
   }
 
 
-  container.innerHTML = html;
+  container.innerHTML =
+    html;
 }
 
 
-// =====================================================
-// TODAY
-// =====================================================
+/* =====================================================
+   TODAY
+===================================================== */
 
 function renderToday() {
 
   const container =
-    document.getElementById("todayJobs");
+    document.getElementById(
+      "todayJobs"
+    );
 
 
   const today =
@@ -840,61 +1227,89 @@ function renderToday() {
 
 
   const search =
-    document
-      .getElementById("searchInput")
-      .value
+    document.getElementById(
+      "searchInput"
+    ).value
       .toLowerCase();
 
 
   const list =
-    jobs.filter(j => {
+    jobs.filter(job => {
 
       const sameDay =
-        j.date === today;
+        job.date ===
+        today;
 
 
       const match =
-        j.job_number
+        job.job_number
           .toLowerCase()
           .includes(search)
+
         ||
-        (j.remark || "")
-          .toLowerCase()
-          .includes(search);
+
+        (
+          job.remark ||
+          ""
+        )
+        .toLowerCase()
+        .includes(search);
 
 
-      return sameDay && match;
+      return (
+        sameDay &&
+        match
+      );
+
     });
 
 
   if (!list.length) {
 
     container.innerHTML =
-      '<div class="empty">ยังไม่มีงานวันนี้</div>';
+      '<div class="empty">' +
+      'ยังไม่มีงานวันนี้' +
+      '</div>';
 
     return;
   }
 
 
   container.innerHTML =
-    list.map(j => `
+
+    list.map(job => `
 
       <div class="job-item">
 
         <strong>
-          ${escapeHTML(j.job_number)}
+
+          ${escapeHTML(
+            job.job_number
+          )}
+
         </strong>
 
         <div>
-          ${escapeHTML(j.remark || "-")}
+
+          ${escapeHTML(
+            job.remark || "-"
+          )}
+
         </div>
 
         <div class="small">
-          ${j.date} ${j.time}
+
+          ${job.date}
+          ${job.time}
+
         </div>
 
         <div class="status">
-          ${statusText(j.status)}
+
+          ${statusText(
+            job.status
+          )}
+
         </div>
 
       </div>
@@ -903,78 +1318,123 @@ function renderToday() {
 }
 
 
-// =====================================================
-// HISTORY
-// =====================================================
+/* =====================================================
+   HISTORY
+===================================================== */
 
 function renderHistory() {
 
   const container =
-    document.getElementById("history");
+    document.getElementById(
+      "history"
+    );
 
 
   const list =
-    jobs.filter(j =>
-      j.status === "completed"
+    jobs.filter(
+      job =>
+        job.status ===
+        "completed"
     );
 
 
   if (!list.length) {
 
     container.innerHTML =
-      '<div class="empty">ยังไม่มีประวัติ</div>';
+      '<div class="empty">' +
+      'ยังไม่มีประวัติ' +
+      '</div>';
 
     return;
   }
 
 
   container.innerHTML =
-    list.slice().reverse().map(j => `
 
-      <div class="job-item">
+    list
+      .slice()
+      .reverse()
+      .map(job => `
 
-        <strong>
-          ${escapeHTML(j.job_number)}
-        </strong>
+        <div class="job-item">
 
-        <div>
-          ${escapeHTML(j.remark || "-")}
+          <strong>
+
+            ${escapeHTML(
+              job.job_number
+            )}
+
+          </strong>
+
+          <div>
+
+            ${escapeHTML(
+              job.remark || "-"
+            )}
+
+          </div>
+
+          <div class="small">
+
+            วันที่ ${job.date}
+
+          </div>
+
+          <div class="small">
+
+            ออกจากหน้างาน:
+            ${formatDateTime(
+              job.leave_at
+            )}
+
+          </div>
+
         </div>
 
-        <div class="small">
-          วันที่ ${j.date}
-        </div>
-
-        <div class="small">
-          ออกจากหน้างาน:
-          ${formatDateTime(j.leave_at)}
-        </div>
-
-      </div>
-
-    `).join("");
+      `)
+      .join("");
 }
 
 
-// =====================================================
-// NOTIFICATION PERMISSION
-// =====================================================
+/* =====================================================
+   ENABLE NOTIFICATION
+===================================================== */
 
-async function requestNotificationPermission() {
+async function enableNotifications() {
 
-  if (!("Notification" in window)) {
+  if (
+    !("Notification" in window)
+  ) {
+
+    alert(
+      "เบราว์เซอร์นี้ไม่รองรับ Notification"
+    );
 
     return false;
   }
 
 
-  if (Notification.permission === "granted") {
+  if (
+    Notification.permission ===
+    "granted"
+  ) {
+
+    updateNotificationStatus();
 
     return true;
   }
 
 
-  if (Notification.permission === "denied") {
+  if (
+    Notification.permission ===
+    "denied"
+  ) {
+
+    alert(
+      "การแจ้งเตือนถูกปิดอยู่ กรุณาเปิดในการตั้งค่า iPhone"
+    );
+
+    updateNotificationStatus();
 
     return false;
   }
@@ -985,98 +1445,196 @@ async function requestNotificationPermission() {
     const permission =
       await Notification.requestPermission();
 
-    return permission === "granted";
 
-  } catch(e) {
+    updateNotificationStatus();
+
+
+    return (
+      permission ===
+      "granted"
+    );
+
+  } catch(error) {
+
+    console.error(error);
 
     return false;
   }
 }
 
 
-// =====================================================
-// SEND NOTIFICATION
-// =====================================================
+/* =====================================================
+   NOTIFICATION STATUS
+===================================================== */
 
-function notifyUser(title, body) {
+function updateNotificationStatus() {
 
-  // แจ้งเตือนบนหน้าเว็บเสมอ
-  showBanner(title, body);
+  const element =
+    document.getElementById(
+      "notificationStatus"
+    );
+
+
+  if (!element) return;
 
 
   if (
-    "Notification" in window &&
-    Notification.permission === "granted"
+    !("Notification" in window)
   ) {
 
-    try {
+    element.textContent =
+      "❌ ไม่รองรับ Notification";
 
-      new Notification(
-        title,
-        {
-          body: body,
-          icon: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
-        }
-      );
+    return;
+  }
 
-    } catch(e) {
 
-      console.log(e);
-    }
+  if (
+    Notification.permission ===
+    "granted"
+  ) {
+
+    element.innerHTML =
+      '<span class="status-ok">' +
+      '🟢 เปิดใช้งานการแจ้งเตือนแล้ว' +
+      '</span>';
+
+  }
+
+  else if (
+    Notification.permission ===
+    "denied"
+  ) {
+
+    element.textContent =
+      "🔴 การแจ้งเตือนถูกปิด";
+
+  }
+
+  else {
+
+    element.textContent =
+      "🟡 ยังไม่ได้อนุญาตการแจ้งเตือน";
+
   }
 }
 
 
-// =====================================================
-// TEST NOTIFICATION
-// =====================================================
+/* =====================================================
+   TEST NOTIFICATION
+===================================================== */
 
 async function testNotification() {
 
   const granted =
-    await requestNotificationPermission();
+    await enableNotifications();
 
 
-  if (granted) {
-
-    notifyUser(
-      "🔔 JOB TIME ทดสอบสำเร็จ",
-      "ระบบแจ้งเตือนสามารถทำงานได้แล้ว"
-    );
-
-  } else {
-
-    alert(
-      "ตอนนี้ยังไม่ได้รับอนุญาตให้แจ้งเตือน\n\n" +
-      "ถ้าไม่มีหน้าต่างขออนุญาต ให้เปิดการแจ้งเตือนของ Safari/เว็บไซต์ก่อน"
-    );
+  if (!granted) {
+    return;
   }
+
+
+  if (
+    "serviceWorker" in navigator
+  ) {
+
+    try {
+
+      const registration =
+        await navigator
+          .serviceWorker
+          .ready;
+
+
+      await registration
+        .showNotification(
+          "🔔 JOB TIME",
+          {
+            body:
+              "ทดสอบแจ้งเตือนสำเร็จ!",
+            tag:
+              "job-time-test",
+            requireInteraction:
+              true,
+            vibrate:
+              [300,200,300]
+          }
+        );
+
+
+      showBanner(
+        "🔔 ทดสอบสำเร็จ",
+        "JOB TIME ส่ง Notification แล้ว"
+      );
+
+
+    } catch(error) {
+
+      console.error(error);
+
+      alert(
+        "ไม่สามารถส่ง Notification ผ่าน Service Worker ได้"
+      );
+
+    }
+
+  }
+
 }
 
 
-// =====================================================
-// TEST TIMER
-// =====================================================
+/* =====================================================
+   TEST TIMER
+===================================================== */
 
 async function startTestTimer() {
 
-  await requestNotificationPermission();
+  const granted =
+    await enableNotifications();
+
+
+  if (!granted) {
+    return;
+  }
 
 
   let active =
-    jobs.find(j =>
-      j.status !== "completed"
+    jobs.find(
+      job =>
+        job.status !==
+        "completed"
     );
+
+
+  if (active) {
+
+    const confirmUse =
+      confirm(
+        "มี JOB กำลังทำงานอยู่\n\n" +
+        "ต้องการใช้ JOB นี้ทดสอบหรือไม่?"
+      );
+
+
+    if (!confirmUse) {
+      return;
+    }
+
+  }
 
 
   if (!active) {
 
     active = {
 
-      id: Date.now().toString(),
+      id:
+        Date.now().toString(),
 
-      job_number: "TEST-" +
-        Math.floor(Math.random() * 10000),
+      job_number:
+        "TEST-" +
+        Math.floor(
+          Math.random() * 10000
+        ),
 
       date:
         new Date()
@@ -1091,7 +1649,8 @@ async function startTestTimer() {
       remark:
         "ทดสอบระบบแจ้งเตือน",
 
-      status: "departed",
+      status:
+        "departed",
 
       created_at:
         new Date().toISOString(),
@@ -1099,37 +1658,49 @@ async function startTestTimer() {
       departed_at:
         new Date().toISOString(),
 
-      onsite_at: null,
+      onsite_at:
+        null,
 
-      done_at: null,
+      done_at:
+        null,
 
-      leave_at: null,
+      leave_at:
+        null,
 
-      test_mode: true
+      test_mode:
+        true
 
     };
 
 
     jobs.push(active);
 
-  } else {
+  }
 
-    active.test_mode = true;
+  else {
 
-    active.status = "departed";
+    active.test_mode =
+      true;
+
+    active.status =
+      "departed";
 
     active.departed_at =
       new Date().toISOString();
 
-    active.onsite_at = null;
+    active.onsite_at =
+      null;
 
-    active.done_at = null;
+    active.done_at =
+      null;
 
-    active.leave_at = null;
+    active.leave_at =
+      null;
+
+    resetNotification(active);
+
   }
 
-
-  resetNotification(active);
 
   saveData();
 
@@ -1137,27 +1708,33 @@ async function startTestTimer() {
 
 
   showBanner(
-    "🧪 TEST TIMER",
-    "อีก 10 วินาที ระบบจะแจ้งเตือนให้กด ONSITE"
+    "🧪 TEST TIMER เริ่มแล้ว",
+    "อีก 10 วินาที กรุณากด ONSITE"
   );
 }
 
 
-// =====================================================
-// CHECK TIMER
-// =====================================================
+/* =====================================================
+   CHECK TIMER
+===================================================== */
 
 function checkTimers() {
 
-  const now = Date.now();
+  const now =
+    Date.now();
 
 
   jobs.forEach(job => {
 
     if (
-      job.status !== "departed" &&
-      job.status !== "onsite" &&
-      job.status !== "done"
+      job.status !==
+        "departed" &&
+
+      job.status !==
+        "onsite" &&
+
+      job.status !==
+        "done"
     ) {
 
       return;
@@ -1168,70 +1745,118 @@ function checkTimers() {
       targetTime(job);
 
 
-    if (!target) return;
+    if (!target) {
+      return;
+    }
 
 
-    if (now >= target) {
+    if (
+      now >= target
+    ) {
 
       let key = "";
 
 
-      if (job.status === "departed") {
+      if (
+        job.status ===
+        "departed"
+      ) {
 
-        key = job.id + "-departed";
-
-      }
-
-      if (job.status === "onsite") {
-
-        key = job.id + "-onsite";
-
-      }
-
-      if (job.status === "done") {
-
-        key = job.id + "-done";
+        key =
+          job.id +
+          "-departed";
 
       }
 
 
-      if (!notifiedJobs.includes(key)) {
+      if (
+        job.status ===
+        "onsite"
+      ) {
 
-        notifiedJobs.push(key);
+        key =
+          job.id +
+          "-onsite";
+
+      }
+
+
+      if (
+        job.status ===
+        "done"
+      ) {
+
+        key =
+          job.id +
+          "-done";
+
+      }
+
+
+      if (
+        !notifiedJobs.includes(
+          key
+        )
+      ) {
+
+        notifiedJobs.push(
+          key
+        );
 
         saveData();
 
 
-        if (job.status === "departed") {
+        if (
+          job.status ===
+          "departed"
+        ) {
 
           notifyUser(
+
             "🚗 JOB TIME",
+
             "JOB " +
             job.job_number +
             " ถึงเวลาที่กำหนดแล้ว กรุณากด ONSITE"
+
           );
+
         }
 
 
-        if (job.status === "onsite") {
+        if (
+          job.status ===
+          "onsite"
+        ) {
 
           notifyUser(
+
             "📍 JOB TIME",
+
             "JOB " +
             job.job_number +
             " ถึงเวลาที่กำหนดแล้ว กรุณากด DONE"
+
           );
+
         }
 
 
-        if (job.status === "done") {
+        if (
+          job.status ===
+          "done"
+        ) {
 
           notifyUser(
+
             "✅ JOB TIME",
+
             "JOB " +
             job.job_number +
             " ถึงเวลาที่กำหนดแล้ว กรุณากด LEAVE"
+
           );
+
         }
 
       }
@@ -1245,143 +1870,237 @@ function checkTimers() {
 }
 
 
-setInterval(checkTimers,1000);
+setInterval(
+  checkTimers,
+  1000
+);
 
 
-// =====================================================
-// RESET NOTIFICATION
-// =====================================================
+/* =====================================================
+   SEND NOTIFICATION
+===================================================== */
+
+function notifyUser(
+  title,
+  body
+) {
+
+  showBanner(
+    title,
+    body
+  );
+
+
+  if (
+    "serviceWorker" in navigator
+  ) {
+
+    navigator
+      .serviceWorker
+      .ready
+      .then(
+        registration => {
+
+          return registration
+            .showNotification(
+              title,
+              {
+                body:
+                  body,
+
+                tag:
+                  "job-time-" +
+                  Date.now(),
+
+                requireInteraction:
+                  true,
+
+                vibrate:
+                  [300,200,300]
+              }
+            );
+
+        }
+      )
+      .catch(
+        error => {
+
+          console.error(
+            error
+          );
+
+        }
+      );
+
+  }
+
+}
+
+
+/* =====================================================
+   RESET NOTIFICATION
+===================================================== */
 
 function resetNotification(job) {
 
   notifiedJobs =
     notifiedJobs.filter(
-      key => !key.startsWith(job.id + "-")
+      key =>
+        !key.startsWith(
+          job.id + "-"
+        )
     );
+
 
   saveData();
 }
 
 
-// =====================================================
-// BANNER
-// =====================================================
+/* =====================================================
+   BANNER
+===================================================== */
 
-function showBanner(title, body) {
+function showBanner(
+  title,
+  body
+) {
 
   const old =
-    document.getElementById("notifyBanner");
+    document.getElementById(
+      "notifyBanner"
+    );
 
-  if (old) old.remove();
+
+  if (old) {
+    old.remove();
+  }
 
 
   const banner =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
 
 
   banner.id =
     "notifyBanner";
 
-
-  banner.style.position =
-    "fixed";
-
-  banner.style.left =
-    "15px";
-
-  banner.style.right =
-    "15px";
-
-  banner.style.bottom =
-    "20px";
-
-  banner.style.zIndex =
-    "9999";
-
-  banner.style.background =
-    "#111827";
-
-  banner.style.color =
-    "white";
-
-  banner.style.padding =
-    "18px";
-
-  banner.style.borderRadius =
-    "16px";
-
-  banner.style.boxShadow =
-    "0 5px 20px rgba(0,0,0,.3)";
+  banner.className =
+    "banner";
 
 
   banner.innerHTML = `
 
-    <strong>${escapeHTML(title)}</strong>
+    <strong>
+      ${escapeHTML(title)}
+    </strong>
 
-    <div style="margin-top:6px">
+    <div
+      style="margin-top:6px">
+
       ${escapeHTML(body)}
+
     </div>
 
     <button
-      style="
-        background:white;
-        color:#111827;
-        margin-top:10px;
-      "
-      onclick="document.getElementById('notifyBanner').remove()"
-    >
+      onclick="
+        document
+        .getElementById(
+          'notifyBanner'
+        )
+        .remove()
+      ">
+
       ปิด
+
     </button>
 
   `;
 
 
-  document.body.appendChild(banner);
+  document.body.appendChild(
+    banner
+  );
 
 
-  setTimeout(() => {
+  setTimeout(
+    () => {
 
-    const b =
-      document.getElementById("notifyBanner");
+      const b =
+        document.getElementById(
+          "notifyBanner"
+        );
 
-    if (b) b.remove();
+      if (b) {
+        b.remove();
+      }
 
-  },15000);
+    },
+    15000
+  );
 }
 
 
-// =====================================================
-// FORMAT DATE
-// =====================================================
+/* =====================================================
+   FORMAT DATE
+===================================================== */
 
-function formatDateTime(value) {
+function formatDateTime(
+  value
+) {
 
-  if (!value) return "-";
+  if (!value) {
+    return "-";
+  }
 
 
   return new Date(value)
-    .toLocaleString("th-TH");
+    .toLocaleString(
+      "th-TH"
+    );
 }
 
 
-// =====================================================
-// ESCAPE HTML
-// =====================================================
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
 
-function escapeHTML(value) {
+function escapeHTML(
+  value
+) {
 
   return String(value)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
+
+    .replaceAll(
+      "&",
+      "&amp;"
+    )
+
+    .replaceAll(
+      "<",
+      "&lt;"
+    )
+
+    .replaceAll(
+      ">",
+      "&gt;"
+    )
+
+    .replaceAll(
+      '"',
+      "&quot;"
+    )
+
+    .replaceAll(
+      "'",
+      "&#039;"
+    );
 }
 
 
-// =====================================================
-// RENDER ALL
-// =====================================================
+/* =====================================================
+   RENDER ALL
+===================================================== */
 
 function renderAll() {
 
@@ -1390,41 +2109,64 @@ function renderAll() {
   renderToday();
 
   renderHistory();
+
+  updateNotificationStatus();
 }
 
+
+/* =====================================================
+   SERVICE WORKER
+===================================================== */
+
+if (
+  "serviceWorker" in navigator
+) {
+
+  window.addEventListener(
+    "load",
+    () => {
+
+      navigator
+        .serviceWorker
+        .register(
+          "./service-worker.js"
+        )
+
+        .then(
+          registration => {
+
+            console.log(
+              "JOB TIME Service Worker พร้อมใช้งาน",
+              registration
+            );
+
+          }
+        )
+
+        .catch(
+          error => {
+
+            console.error(
+              "Service Worker Error:",
+              error
+            );
+
+          }
+        );
+
+    }
+  );
+
+}
+
+
+/* =====================================================
+   START
+===================================================== */
 
 renderAll();
 
 </script>
-<script>
 
-if ("serviceWorker" in navigator) {
-
-  window.addEventListener("load", () => {
-
-    navigator.serviceWorker
-      .register("./service-worker.js")
-      .then(registration => {
-
-        console.log(
-          "JOB TIME Service Worker พร้อมใช้งาน",
-          registration
-        );
-
-      })
-      .catch(error => {
-
-        console.error(
-          "Service Worker Error:",
-          error
-        );
-
-      });
-
-  });
-
-}
-
-</script>
 </body>
 </html>
