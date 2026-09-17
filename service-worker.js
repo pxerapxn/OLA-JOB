@@ -1,5 +1,6 @@
 /* =====================================================
-   JOB TIME SERVICE WORKER + FIREBASE FCM
+   JOB TIME SERVICE WORKER
+   PWA + FIREBASE FCM
 ===================================================== */
 
 
@@ -42,26 +43,20 @@ firebase.initializeApp({
 });
 
 
-const messaging =
-  firebase.messaging();
+const messaging = firebase.messaging();
 
 
 /* =====================================================
    CACHE
 ===================================================== */
 
-const CACHE_NAME =
-  "job-time-v4";
+const CACHE_NAME = "job-time-v5";
 
 
 const FILES_TO_CACHE = [
-
   "./",
-
   "./index.html",
-
   "./manifest.json"
-
 ];
 
 
@@ -76,21 +71,16 @@ self.addEventListener(
     event.waitUntil(
 
       caches
-        .open(
-          CACHE_NAME
-        )
-        .then(
-          cache => {
+        .open(CACHE_NAME)
+        .then(cache => {
 
-            return cache.addAll(
-              FILES_TO_CACHE
-            );
+          return cache.addAll(
+            FILES_TO_CACHE
+          );
 
-          }
-        )
+        })
 
     );
-
 
     self.skipWaiting();
 
@@ -110,33 +100,27 @@ self.addEventListener(
 
       caches
         .keys()
-        .then(
-          keys => {
+        .then(keys => {
 
-            return Promise.all(
+          return Promise.all(
 
-              keys
+            keys
 
-                .filter(
-                  key =>
-                    key !==
-                    CACHE_NAME
-                )
+              .filter(
+                key =>
+                  key !== CACHE_NAME
+              )
 
-                .map(
-                  key =>
-                    caches.delete(
-                      key
-                    )
-                )
+              .map(
+                key =>
+                  caches.delete(key)
+              )
 
-            );
+          );
 
-          }
-        )
+        })
 
     );
-
 
     self.clients.claim();
 
@@ -155,21 +139,15 @@ self.addEventListener(
     event.respondWith(
 
       caches
-        .match(
-          event.request
-        )
-        .then(
-          response => {
+        .match(event.request)
+        .then(response => {
 
-            return (
-              response ||
-              fetch(
-                event.request
-              )
-            );
+          return (
+            response ||
+            fetch(event.request)
+          );
 
-          }
-        )
+        })
 
     );
 
@@ -182,7 +160,6 @@ self.addEventListener(
 ===================================================== */
 
 messaging.onBackgroundMessage(
-
   payload => {
 
     console.log(
@@ -192,27 +169,20 @@ messaging.onBackgroundMessage(
 
 
     const title =
-
       payload.notification?.title ||
-
       payload.data?.title ||
-
       "🔔 JOB TIME";
 
 
     const body =
-
       payload.notification?.body ||
-
       payload.data?.body ||
-
       "ถึงเวลาปฏิบัติงานแล้ว";
 
 
     const notificationOptions = {
 
-      body:
-        body,
+      body: body,
 
       icon:
         "./icon-192.png",
@@ -242,15 +212,11 @@ messaging.onBackgroundMessage(
 
 
     return self.registration.showNotification(
-
       title,
-
       notificationOptions
-
     );
 
   }
-
 );
 
 
@@ -266,9 +232,7 @@ self.addEventListener(
 
 
     const url =
-
       event.notification?.data?.url ||
-
       "./";
 
 
@@ -285,38 +249,31 @@ self.addEventListener(
 
         })
 
-        .then(
-          clientList => {
+        .then(clientList => {
 
-            for (
-              const client
-              of clientList
-            ) {
+          for (
+            const client
+            of clientList
+          ) {
 
-              if (
-                "focus"
-                in client
-              ) {
+            if ("focus" in client) {
 
-                return client.focus();
-
-              }
-
-            }
-
-
-            if (
-              clients.openWindow
-            ) {
-
-              return clients.openWindow(
-                url
-              );
+              return client.focus();
 
             }
 
           }
-        )
+
+
+          if (clients.openWindow) {
+
+            return clients.openWindow(
+              url
+            );
+
+          }
+
+        })
 
     );
 
