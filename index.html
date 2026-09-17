@@ -40,7 +40,7 @@
 const firebaseConfig = {
 
   apiKey:
-    "AIzaSyC2d9nYhQYkJDJpPz-kK9MFgoeN9JNhAOM",
+    "AIzaSyC2d9YhQYkJDJpPz-kK9MFgoeN9JNhAOM",
 
   authDomain:
     "ola-job-f75b0.firebaseapp.com",
@@ -70,7 +70,6 @@ firebase.initializeApp(
 
 const firebaseMessaging =
   firebase.messaging();
-
 
 </script>
 
@@ -457,6 +456,32 @@ label {
   color: #111827;
 }
 
+
+#fcmTokenBox {
+
+  margin-top: 12px;
+
+  padding: 12px;
+
+  background: #f9fafb;
+
+  border-radius: 12px;
+
+  border: 1px solid #e5e7eb;
+}
+
+
+#fcmToken {
+
+  font-size: 11px;
+
+  line-height: 1.4;
+
+  word-break: break-all;
+
+  background: white;
+}
+
 </style>
 
 </head>
@@ -560,6 +585,34 @@ onclick="testNotification()">
 </button>
 
 
+<!-- FCM TOKEN -->
+
+<div
+id="fcmTokenBox"
+style="display:none;">
+
+<label>
+Firebase Registration Token
+</label>
+
+<textarea
+id="fcmToken"
+rows="5"
+readonly>
+</textarea>
+
+
+<button
+class="btn-gray"
+onclick="copyFCMToken()">
+
+📋 คัดลอก Token
+
+</button>
+
+</div>
+
+
 <div class="test-info">
 
 <b>TEST TIMER</b>
@@ -605,7 +658,7 @@ id="searchInput"
 class="search"
 type="text"
 placeholder="🔎 ค้นหา Job หรือ Remark"
-oninput="renderToday()">
+oninput="renderToday">
 
 
 <div id="todayJobs">
@@ -1737,6 +1790,11 @@ async function enableNotifications() {
       );
 
 
+      showFCMToken(
+        token
+      );
+
+
       const status =
         document.getElementById(
           "notificationStatus"
@@ -1793,6 +1851,100 @@ async function enableNotifications() {
 
 
 /* =====================================================
+   SHOW FCM TOKEN
+===================================================== */
+
+function showFCMToken(token) {
+
+  const box =
+    document.getElementById(
+      "fcmTokenBox"
+    );
+
+
+  const input =
+    document.getElementById(
+      "fcmToken"
+    );
+
+
+  if (!box || !input) {
+
+    return;
+
+  }
+
+
+  input.value =
+    token || "";
+
+
+  box.style.display =
+    token
+      ? "block"
+      : "none";
+
+}
+
+
+/* =====================================================
+   COPY FCM TOKEN
+===================================================== */
+
+async function copyFCMToken() {
+
+  const input =
+    document.getElementById(
+      "fcmToken"
+    );
+
+
+  if (
+    !input ||
+    !input.value
+  ) {
+
+    alert(
+      "ยังไม่มี Firebase Token"
+    );
+
+    return;
+
+  }
+
+
+  try {
+
+    await navigator.clipboard.writeText(
+      input.value
+    );
+
+
+    alert(
+      "📋 คัดลอก Firebase Token แล้ว"
+    );
+
+
+  } catch(error) {
+
+    input.select();
+
+
+    document.execCommand(
+      "copy"
+    );
+
+
+    alert(
+      "📋 คัดลอก Firebase Token แล้ว"
+    );
+
+  }
+
+}
+
+
+/* =====================================================
    NOTIFICATION STATUS
 ===================================================== */
 
@@ -1815,6 +1967,7 @@ function updateNotificationStatus() {
       "❌ ไม่รองรับ Notification";
 
     return;
+
   }
 
 
@@ -1831,6 +1984,7 @@ function updateNotificationStatus() {
 
       '</span>';
 
+
   }
 
 
@@ -1841,6 +1995,7 @@ function updateNotificationStatus() {
 
     element.textContent =
       "🔴 การแจ้งเตือนถูกปิด";
+
 
   }
 
@@ -1919,7 +2074,9 @@ async function testNotification() {
 
     } catch(error) {
 
-      console.error(error);
+      console.error(
+        error
+      );
 
 
       alert(
@@ -2059,7 +2216,9 @@ async function startTestTimer() {
       null;
 
 
-    resetNotification(active);
+    resetNotification(
+      active
+    );
 
   }
 
@@ -2562,6 +2721,28 @@ if (
               registration
 
             );
+
+
+            /*
+
+              ถ้ามี Token ที่เคยบันทึกไว้
+              ให้แสดงกลับมาอีกครั้ง
+
+            */
+
+            const savedToken =
+              localStorage.getItem(
+                "fcmToken"
+              );
+
+
+            if (savedToken) {
+
+              showFCMToken(
+                savedToken
+              );
+
+            }
 
           }
 
