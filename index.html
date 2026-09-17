@@ -32,6 +32,10 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
 
+<!-- Firebase Installations -->
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-installations-compat.js"></script>
+
+<!-- Firebase Messaging -->
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging-compat.js"></script>
 
 
@@ -74,6 +78,139 @@ const firebaseMessaging =
 
 const FCM_VAPID_KEY =
   "BHdcwG22SK0Rqec8MSACS8wYVwnWHuXxrPj-rm4tOVQpvzWpL0COJeEmjy-gF5GmzU0AoorV9dR16DfFVIfAfOI";
+
+
+/* =====================================================
+   FIREBASE INSTALLATIONS
+===================================================== */
+
+const firebaseInstallations =
+  firebase.installations();
+
+
+/* =====================================================
+   TEST FIREBASE INSTALLATIONS
+===================================================== */
+
+async function testFirebaseInstallations() {
+
+  const status =
+    document.getElementById(
+      "notificationStatus"
+    );
+
+  try {
+
+    status.innerHTML =
+      "🟡 กำลังทดสอบ Firebase Installations...";
+
+
+    console.log(
+      "กำลังทดสอบ Firebase Installations..."
+    );
+
+
+    const installationId =
+      await firebaseInstallations.getId();
+
+
+    console.log(
+      "Firebase Installation ID:",
+      installationId
+    );
+
+
+    localStorage.setItem(
+      "firebaseInstallationId",
+      installationId
+    );
+
+
+    status.innerHTML =
+
+      '<span class="status-ok">' +
+
+      '🟢 Firebase Installations ใช้งานได้' +
+
+      '</span>' +
+
+      '<br><br>' +
+
+      '<span class="small">' +
+
+      'Installation ID:<br>' +
+
+      '<b>' +
+
+      escapeHTML(
+        installationId
+      ) +
+
+      '</b>' +
+
+      '</span>';
+
+
+    alert(
+
+      "✅ Firebase Installations ใช้งานได้\n\n" +
+
+      "Installation ID:\n" +
+
+      installationId
+
+    );
+
+
+    return installationId;
+
+
+  } catch(error) {
+
+    console.error(
+      "Firebase Installations Error:",
+      error
+    );
+
+
+    const message =
+      error?.message ||
+      String(error);
+
+
+    status.innerHTML =
+
+      '<span class="status-error">' +
+
+      '🔴 Firebase Installations ไม่สำเร็จ' +
+
+      '</span>' +
+
+      '<br>' +
+
+      '<span class="small">' +
+
+      escapeHTML(
+        message
+      ) +
+
+      '</span>';
+
+
+    alert(
+
+      "❌ Firebase Installations ไม่สำเร็จ\n\n" +
+
+      message
+
+    );
+
+
+    return null;
+
+  }
+
+}
 
 </script>
 
@@ -405,6 +542,8 @@ label {
 .status-ok {
 
   font-weight: bold;
+
+  color: #16a34a;
 }
 
 
@@ -494,6 +633,24 @@ label {
   background: white;
 }
 
+
+.installation-box {
+
+  margin-top: 12px;
+
+  padding: 12px;
+
+  background: #ecfdf5;
+
+  border: 1px solid #bbf7d0;
+
+  border-radius: 12px;
+
+  font-size: 13px;
+
+  word-break: break-all;
+}
+
 </style>
 
 </head>
@@ -581,6 +738,15 @@ onclick="openModal()">
 
 <button
 class="btn-test"
+onclick="testFirebaseInstallations()">
+
+🧪 ทดสอบ Firebase Installations
+
+</button>
+
+
+<button
+class="btn-test"
 onclick="enableNotifications()">
 
 🔔 เปิดใช้งานการแจ้งเตือน
@@ -595,6 +761,23 @@ onclick="testNotification()">
 🧪 ทดสอบแจ้งเตือนทันที
 
 </button>
+
+
+<div
+id="installationBox"
+class="installation-box"
+style="display:none;">
+
+<b>
+Firebase Installation ID
+</b>
+
+<div
+id="installationId">
+-
+</div>
+
+</div>
 
 
 <div
@@ -1832,12 +2015,86 @@ async function enableNotifications() {
       await getJOBTimeServiceWorker();
 
 
+    /* =================================================
+       TEST INSTALLATION FIRST
+    ================================================= */
+
+    console.log(
+      "กำลังตรวจสอบ Firebase Installation..."
+    );
+
+
+    let installationId =
+      localStorage.getItem(
+        "firebaseInstallationId"
+      );
+
+
+    if (!installationId) {
+
+      installationId =
+        await firebaseInstallations.getId();
+
+    }
+
+
+    if (!installationId) {
+
+      throw new Error(
+        "Firebase ไม่สามารถสร้าง Installation ID ได้"
+      );
+
+    }
+
+
+    localStorage.setItem(
+      "firebaseInstallationId",
+      installationId
+    );
+
+
+    const installationBox =
+      document.getElementById(
+        "installationBox"
+      );
+
+
+    const installationElement =
+      document.getElementById(
+        "installationId"
+      );
+
+
+    if (installationBox) {
+
+      installationBox.style.display =
+        "block";
+
+    }
+
+
+    if (installationElement) {
+
+      installationElement.textContent =
+        installationId;
+
+    }
+
+
+    console.log(
+      "Firebase Installation ID:",
+      installationId
+    );
+
+
+    /* =================================================
+       GET FCM TOKEN
+    ================================================= */
+
     console.log(
       "กำลังขอ Firebase FCM Token..."
     );
 
-
-    /* GET TOKEN */
 
     const token =
       await firebaseMessaging.getToken({
@@ -2085,6 +2342,12 @@ function updateNotificationStatus() {
       );
 
 
+    const installationId =
+      localStorage.getItem(
+        "firebaseInstallationId"
+      );
+
+
     if (savedToken) {
 
       element.innerHTML =
@@ -2092,6 +2355,26 @@ function updateNotificationStatus() {
         '<span class="status-ok">' +
 
         '🟢 เปิดใช้งานการแจ้งเตือนแล้ว' +
+
+        '</span>';
+
+    }
+
+    else if (installationId) {
+
+      element.innerHTML =
+
+        '<span class="status-ok">' +
+
+        '🟢 Firebase Installations พร้อมใช้งาน' +
+
+        '</span>' +
+
+        '<br>' +
+
+        '<span class="small">' +
+
+        'ยังไม่ได้รับ FCM Registration Token' +
 
         '</span>';
 
@@ -2824,10 +3107,6 @@ if (
 
       try {
 
-        /*
-         * ใช้ Service Worker เพียงตัวเดียว
-         */
-
         const registration =
           await navigator.serviceWorker.register(
             "./service-worker.js",
@@ -2846,10 +3125,6 @@ if (
         await navigator.serviceWorker.ready;
 
 
-        /*
-         * แสดง Token เดิม
-         */
-
         const savedToken =
           localStorage.getItem(
             "fcmToken"
@@ -2861,6 +3136,45 @@ if (
           showFCMToken(
             savedToken
           );
+
+        }
+
+
+        const savedInstallationId =
+          localStorage.getItem(
+            "firebaseInstallationId"
+          );
+
+
+        if (
+          savedInstallationId
+        ) {
+
+          const box =
+            document.getElementById(
+              "installationBox"
+            );
+
+          const element =
+            document.getElementById(
+              "installationId"
+            );
+
+
+          if (box) {
+
+            box.style.display =
+              "block";
+
+          }
+
+
+          if (element) {
+
+            element.textContent =
+              savedInstallationId;
+
+          }
 
         }
 
