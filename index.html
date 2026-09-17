@@ -5,20 +5,23 @@
 
 <meta charset="UTF-8">
 
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0, viewport-fit=cover"
->
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
-<meta
-  name="theme-color"
-  content="#111827"
->
+<meta name="theme-color"
+      content="#111827">
 
-<link
-  rel="manifest"
-  href="./manifest.json"
->
+<meta name="apple-mobile-web-app-capable"
+      content="yes">
+
+<meta name="apple-mobile-web-app-status-bar-style"
+      content="default">
+
+<meta name="apple-mobile-web-app-title"
+      content="JOB TIME">
+
+<link rel="manifest"
+      href="./manifest.json">
 
 <title>JOB TIME</title>
 
@@ -27,40 +30,28 @@
 
 *{
   box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
 }
 
 body{
   margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,
-    "Segoe UI",sans-serif;
+  font-family:-apple-system,
+              BlinkMacSystemFont,
+              "Segoe UI",
+              sans-serif;
+
   background:#f4f6f8;
   color:#111827;
 }
 
-header{
-  background:#111827;
-  color:white;
-  padding:20px 16px;
-  padding-top:calc(20px + env(safe-area-inset-top));
-}
-
-header h1{
-  margin:0;
-  font-size:28px;
-}
-
-header p{
-  margin:5px 0 0;
-  opacity:.75;
-  font-size:14px;
-}
-
 .container{
-  max-width:700px;
+  max-width:600px;
   margin:auto;
-  padding:15px;
-  padding-bottom:40px;
+  padding:16px;
+}
+
+h1{
+  text-align:center;
+  margin:8px 0 20px;
 }
 
 .card{
@@ -68,128 +59,68 @@ header p{
   border-radius:18px;
   padding:18px;
   margin-bottom:15px;
-  box-shadow:0 3px 15px rgba(0,0,0,.06);
-}
-
-.card h2{
-  margin-top:0;
-  font-size:19px;
+  box-shadow:0 4px 15px rgba(0,0,0,.08);
 }
 
 input,
-textarea{
+textarea,
+button{
   width:100%;
   padding:13px;
+  margin-top:8px;
+  border-radius:10px;
   border:1px solid #d1d5db;
-  border-radius:11px;
   font-size:16px;
-  margin-top:6px;
-  margin-bottom:12px;
-  background:white;
 }
 
 textarea{
-  min-height:80px;
   resize:vertical;
-}
-
-label{
-  display:block;
-  font-size:14px;
-  font-weight:600;
+  min-height:80px;
 }
 
 button{
-  border:0;
-  border-radius:12px;
-  padding:13px 16px;
-  font-size:16px;
-  font-weight:700;
+  border:none;
+  background:#111827;
+  color:white;
+  font-weight:bold;
   cursor:pointer;
 }
 
-.btn-primary{
-  width:100%;
-  background:#111827;
-  color:white;
-}
-
-.btn-green{
-  width:100%;
-  background:#16a34a;
-  color:white;
+button:active{
+  transform:scale(.98);
 }
 
 .btn-blue{
-  width:100%;
   background:#2563eb;
-  color:white;
+}
+
+.btn-green{
+  background:#16a34a;
 }
 
 .btn-orange{
-  width:100%;
-  background:#f59e0b;
-  color:white;
+  background:#ea580c;
 }
 
 .btn-red{
-  width:100%;
   background:#dc2626;
-  color:white;
 }
 
 .btn-gray{
-  background:#e5e7eb;
-  color:#111827;
+  background:#6b7280;
 }
 
-.status-box{
-  margin-top:12px;
-  padding:12px;
-  border-radius:10px;
-  background:#f3f4f6;
-  font-size:13px;
-  word-break:break-word;
-}
-
-.success{
-  color:#15803d;
-}
-
-.error{
-  color:#dc2626;
-}
-
-.warning{
-  color:#b45309;
-}
-
-.job{
-  border:1px solid #e5e7eb;
-  border-radius:15px;
-  padding:15px;
-  margin-top:10px;
-}
-
-.job-number{
-  font-size:20px;
-  font-weight:800;
-}
-
-.remark{
-  color:#6b7280;
-  margin-top:5px;
-  white-space:pre-wrap;
+.job-card{
+  border-left:6px solid #2563eb;
 }
 
 .status{
   display:inline-block;
-  margin-top:10px;
   padding:6px 10px;
-  border-radius:999px;
-  font-size:13px;
-  font-weight:700;
+  border-radius:20px;
   background:#e5e7eb;
+  font-size:13px;
+  font-weight:bold;
 }
 
 .status.active{
@@ -197,54 +128,46 @@ button{
   color:#1d4ed8;
 }
 
-.status.completed{
-  background:#f3f4f6;
-  color:#4b5563;
+.status.done{
+  background:#dcfce7;
+  color:#166534;
 }
 
 .timer{
   font-size:42px;
-  font-weight:800;
+  font-weight:bold;
   text-align:center;
   margin:15px 0;
-  font-variant-numeric:tabular-nums;
-}
-
-.timer-label{
-  text-align:center;
-  color:#6b7280;
-  font-size:14px;
-}
-
-.button-grid{
-  display:grid;
-  gap:10px;
 }
 
 .small{
   color:#6b7280;
-  font-size:13px;
-}
-
-.empty{
-  text-align:center;
-  color:#9ca3af;
-  padding:20px 5px;
+  font-size:14px;
 }
 
 .history-item{
-  border-top:1px solid #e5e7eb;
   padding:12px 0;
+  border-bottom:1px solid #e5e7eb;
 }
 
-.history-item:first-child{
-  border-top:0;
+.history-item:last-child{
+  border-bottom:none;
 }
 
-hr{
-  border:0;
-  border-top:1px solid #e5e7eb;
-  margin:15px 0;
+label{
+  display:block;
+  margin-top:10px;
+  font-weight:bold;
+}
+
+#message{
+  text-align:center;
+  margin:10px 0;
+  font-weight:bold;
+}
+
+.hidden{
+  display:none;
 }
 
 </style>
@@ -255,22 +178,14 @@ hr{
 <body>
 
 
-<header>
-
-<h1>JOB TIME</h1>
-
-<p>
-ระบบบันทึกและแจ้งเตือนเวลาปฏิบัติงาน
-</p>
-
-</header>
-
-
 <div class="container">
 
 
+<h1>⏱️ JOB TIME</h1>
+
+
 <!-- =====================================================
-     WEB PUSH
+     PUSH NOTIFICATION
 ===================================================== -->
 
 <div class="card">
@@ -278,33 +193,25 @@ hr{
 <h2>🔔 การแจ้งเตือน</h2>
 
 <p class="small">
-
-ระบบแจ้งเตือนแบบ Web Push
-สำหรับ iPhone Home Screen
-
+เปิดใช้งาน Web Push เพื่อรับการแจ้งเตือนจาก JOB TIME
 </p>
-
 
 <button
   class="btn-blue"
-  onclick="enableWebPush()"
->
+  onclick="enablePush()">
 
-เปิดใช้งาน Web Push
+🔔 เปิดใช้งาน Web Push
 
 </button>
 
-
-<div
-  id="pushStatus"
-  class="status-box"
->
-
-ยังไม่ได้ตรวจสอบ
-
+<div id="pushStatus"
+     class="small"
+     style="margin-top:10px;">
+ยังไม่ได้เปิดใช้งาน
 </div>
 
 </div>
+
 
 
 <!-- =====================================================
@@ -323,8 +230,7 @@ hr{
 <input
   id="jobNumber"
   type="text"
-  placeholder="เช่น JOB-12345"
->
+  placeholder="เช่น JOB-001">
 
 
 <label>
@@ -333,18 +239,16 @@ hr{
 
 <input
   id="jobDate"
-  type="date"
->
+  type="date">
 
 
 <label>
-เวลาเริ่มงาน
+เวลา
 </label>
 
 <input
   id="jobTime"
-  type="time"
->
+  type="time">
 
 
 <label>
@@ -353,14 +257,12 @@ Remark
 
 <textarea
   id="jobRemark"
-  placeholder="รายละเอียดเพิ่มเติม"
-></textarea>
+  placeholder="รายละเอียดงาน"></textarea>
 
 
 <button
-  class="btn-primary"
-  onclick="addJob()"
->
+  class="btn-green"
+  onclick="addJob()">
 
 เพิ่ม Job
 
@@ -369,48 +271,35 @@ Remark
 </div>
 
 
+
 <!-- =====================================================
      ACTIVE JOB
 ===================================================== -->
 
-<div class="card">
+<div
+  id="activeJobSection"
+  class="card hidden">
 
-<h2>
-⏱ Job ที่กำลังปฏิบัติงาน
-</h2>
+<h2>🚧 Job ที่กำลังปฏิบัติ</h2>
 
-
-<div id="activeJob">
-
-<div class="empty">
-ไม่มี Job ที่กำลังปฏิบัติงาน
-</div>
+<div id="activeJob"></div>
 
 </div>
 
-</div>
 
 
 <!-- =====================================================
-     TODAY
+     TODAY JOB
 ===================================================== -->
 
 <div class="card">
 
-<h2>
-📅 Job วันนี้
-</h2>
+<h2>📋 Job วันนี้</h2>
 
-
-<div id="todayJobs">
-
-<div class="empty">
-ยังไม่มี Job วันนี้
-</div>
+<div id="todayJobs"></div>
 
 </div>
 
-</div>
 
 
 <!-- =====================================================
@@ -419,28 +308,18 @@ Remark
 
 <div class="card">
 
-<h2>
-🔎 ค้นหา Job
-</h2>
-
+<h2>🔎 ค้นหา Job</h2>
 
 <input
   id="searchInput"
-  type="search"
+  type="text"
   placeholder="ค้นหาเลข Job หรือ Remark"
-  oninput="renderSearch()"
->
+  oninput="searchJobs()">
 
-
-<div id="searchResults">
-
-<div class="empty">
-พิมพ์เพื่อค้นหา Job
-</div>
+<div id="searchResults"></div>
 
 </div>
 
-</div>
 
 
 <!-- =====================================================
@@ -449,302 +328,48 @@ Remark
 
 <div class="card">
 
-<h2>
-📋 ประวัติ Job
-</h2>
+<h2>📚 ประวัติ Job</h2>
 
-
-<div id="history">
-
-<div class="empty">
-ยังไม่มีประวัติ Job
-</div>
-
-</div>
+<div id="history"></div>
 
 </div>
 
 
+<div id="message"></div>
+
+
 </div>
+
 
 
 <script>
 
-/* =====================================================
-   SERVICE WORKER
-===================================================== */
-
-async function getJOBTimeServiceWorker(){
-
-  if(
-    !("serviceWorker" in navigator)
-  ){
-
-    throw new Error(
-      "เบราว์เซอร์ไม่รองรับ Service Worker"
-    );
-
-  }
-
-
-  const registration =
-    await navigator.serviceWorker.register(
-      "./service-worker.js"
-    );
-
-
-  await navigator.serviceWorker.ready;
-
-
-  return registration;
-
-}
-
 
 /* =====================================================
-   WEB PUSH
-===================================================== */
-
-async function enableWebPush(){
-
-  const status =
-    document.getElementById(
-      "pushStatus"
-    );
-
-
-  try{
-
-    status.innerHTML =
-      "กำลังตรวจสอบระบบ Web Push...";
-
-
-    /* -----------------------------------------------
-       CHECK SERVICE WORKER
-    ----------------------------------------------- */
-
-    if(
-      !("serviceWorker" in navigator)
-    ){
-
-      throw new Error(
-        "iPhone ไม่รองรับ Service Worker"
-      );
-
-    }
-
-
-    /* -----------------------------------------------
-       CHECK PUSH API
-    ----------------------------------------------- */
-
-    if(
-      !("PushManager" in window)
-    ){
-
-      throw new Error(
-        "ไม่พบ Push API"
-      );
-
-    }
-
-
-    /* -----------------------------------------------
-       CHECK NOTIFICATION
-    ----------------------------------------------- */
-
-    if(
-      !("Notification" in window)
-    ){
-
-      throw new Error(
-        "ไม่พบ Notification API"
-      );
-
-    }
-
-
-    /* -----------------------------------------------
-       REQUEST PERMISSION
-    ----------------------------------------------- */
-
-    status.innerHTML =
-      "กำลังขอสิทธิ์แจ้งเตือน...";
-
-
-    const permission =
-      await Notification.requestPermission();
-
-
-    if(
-      permission !==
-      "granted"
-    ){
-
-      throw new Error(
-        "ไม่ได้รับอนุญาตการแจ้งเตือน"
-      );
-
-    }
-
-
-    /* -----------------------------------------------
-       SERVICE WORKER
-    ----------------------------------------------- */
-
-    status.innerHTML =
-      "กำลังเชื่อมต่อ Service Worker...";
-
-
-    const registration =
-      await getJOBTimeServiceWorker();
-
-
-    /* -----------------------------------------------
-       CHECK EXISTING SUBSCRIPTION
-    ----------------------------------------------- */
-
-    status.innerHTML =
-      "กำลังตรวจสอบ Push Subscription...";
-
-
-    let subscription =
-      await registration.pushManager.getSubscription();
-
-
-    /* -----------------------------------------------
-       CREATE SUBSCRIPTION
-    ----------------------------------------------- */
-
-    if(!subscription){
-
-      status.innerHTML =
-        "กำลังสร้าง Push Subscription...";
-
-
-      subscription =
-        await registration.pushManager.subscribe({
-
-          userVisibleOnly:
-            true
-
-        });
-
-    }
-
-
-    if(!subscription){
-
-      throw new Error(
-        "ไม่สามารถสร้าง Push Subscription ได้"
-      );
-
-    }
-
-
-    /* -----------------------------------------------
-       GET SUBSCRIPTION JSON
-    ----------------------------------------------- */
-
-    const subscriptionJSON =
-      subscription.toJSON();
-
-
-    console.log(
-      "WEB PUSH SUBSCRIPTION:",
-      subscriptionJSON
-    );
-
-
-    /* -----------------------------------------------
-       SAVE LOCALLY
-    ----------------------------------------------- */
-
-    localStorage.setItem(
-
-      "job_time_push_subscription",
-
-      JSON.stringify(
-        subscriptionJSON
-      )
-
-    );
-
-
-    /* -----------------------------------------------
-       SHOW RESULT
-    ----------------------------------------------- */
-
-    status.innerHTML = `
-
-      <div class="success">
-
-        ✅ Web Push Subscription สำเร็จ
-
-      </div>
-
-      <hr>
-
-      <div>
-        Endpoint:
-      </div>
-
-      <div>
-        ${escapeHtml(
-          subscriptionJSON.endpoint
-        )}
-      </div>
-
-      <hr>
-
-      <div class="small">
-
-        Subscription ถูกบันทึกไว้ในเครื่องแล้ว
-
-      </div>
-
-    `;
-
-
-  }catch(error){
-
-    console.error(
-      "WEB PUSH ERROR:",
-      error
-    );
-
-
-    status.innerHTML = `
-
-      <div class="error">
-
-        ❌ Web Push ไม่สำเร็จ
-
-      </div>
-
-      <div class="small">
-
-        ${escapeHtml(
-          error.message ||
-          String(error)
-        )}
-
-      </div>
-
-    `;
-
-  }
-
-}
-
-
-/* =====================================================
-   JOB STORAGE
+   STORAGE
 ===================================================== */
 
 const JOB_STORAGE_KEY =
   "job_time_jobs";
 
+
+const PUSH_STORAGE_KEY =
+  "job_time_push_subscription";
+
+
+
+/* =====================================================
+   VAPID PUBLIC KEY
+===================================================== */
+
+const VAPID_PUBLIC_KEY =
+  "BHdcwG22SK0Rqec8MSACS8wYVwnWHuXxrPj-rm4tOVQpvzWpL0COJeEmjy-gF5GmzU0AoorV9dR16DfFVIfAfOI";
+
+
+
+/* =====================================================
+   LOAD JOBS
+===================================================== */
 
 function getJobs(){
 
@@ -758,11 +383,14 @@ function getJobs(){
 
   }catch(error){
 
+    console.error(error);
+
     return [];
 
   }
 
 }
+
 
 
 function saveJobs(jobs){
@@ -775,42 +403,67 @@ function saveJobs(jobs){
 }
 
 
+
+/* =====================================================
+   MESSAGE
+===================================================== */
+
+function showMessage(text){
+
+  const message =
+    document.getElementById(
+      "message"
+    );
+
+  message.textContent =
+    text;
+
+  setTimeout(() => {
+
+    message.textContent =
+      "";
+
+  },3000);
+
+}
+
+
+
 /* =====================================================
    ADD JOB
 ===================================================== */
 
 function addJob(){
 
-  const number =
-    document
-      .getElementById("jobNumber")
-      .value
-      .trim();
+  const jobNumber =
+    document.getElementById(
+      "jobNumber"
+    ).value.trim();
 
 
-  const date =
-    document
-      .getElementById("jobDate")
-      .value;
+  const jobDate =
+    document.getElementById(
+      "jobDate"
+    ).value;
 
 
-  const time =
-    document
-      .getElementById("jobTime")
-      .value;
+  const jobTime =
+    document.getElementById(
+      "jobTime"
+    ).value;
 
 
   const remark =
-    document
-      .getElementById("jobRemark")
-      .value
-      .trim();
+    document.getElementById(
+      "jobRemark"
+    ).value.trim();
 
 
-  if(!number){
+
+  if(!jobNumber){
 
     alert(
-      "กรุณาใส่เลข Job"
+      "กรุณาระบุเลข Job"
     );
 
     return;
@@ -818,10 +471,10 @@ function addJob(){
   }
 
 
-  if(!date){
+  if(!jobDate){
 
     alert(
-      "กรุณาเลือกวันที่"
+      "กรุณาระบุวันที่"
     );
 
     return;
@@ -829,40 +482,41 @@ function addJob(){
   }
 
 
-  if(!time){
+  if(!jobTime){
 
     alert(
-      "กรุณาเลือกเวลา"
+      "กรุณาระบุเวลา"
     );
 
     return;
 
   }
+
 
 
   const jobs =
     getJobs();
 
 
-  jobs.unshift({
+  const job = {
 
     id:
       Date.now(),
 
     jobNumber:
-      number,
+      jobNumber,
 
     date:
-      date,
+      jobDate,
 
     time:
-      time,
+      jobTime,
 
     remark:
       remark,
 
     status:
-      "waiting",
+      "WAITING",
 
     departed_at:
       null,
@@ -877,286 +531,150 @@ function addJob(){
       null,
 
     completed:
-      false,
-
-    created_at:
-      new Date().toISOString()
-
-  });
-
-
-  saveJobs(jobs);
-
-
-  document
-    .getElementById(
-      "jobNumber"
-    )
-    .value = "";
-
-
-  document
-    .getElementById(
-      "jobRemark"
-    )
-    .value = "";
-
-
-  renderAll();
-
-}
-
-
-/* =====================================================
-   UPDATE JOB
-===================================================== */
-
-function updateJobStatus(
-  jobId,
-  newStatus
-){
-
-  const jobs =
-    getJobs();
-
-
-  const index =
-    jobs.findIndex(
-      job =>
-        String(job.id) ===
-        String(jobId)
-    );
-
-
-  if(index === -1){
-
-    return;
-
-  }
-
-
-  const now =
-    new Date().toISOString();
-
-
-  if(
-    newStatus ===
-    "departed"
-  ){
-
-    jobs[index].departed_at =
-      now;
-
-    jobs[index].status =
-      "departed";
-
-  }
-
-
-  if(
-    newStatus ===
-    "onsite"
-  ){
-
-    jobs[index].onsite_at =
-      now;
-
-    jobs[index].status =
-      "onsite";
-
-  }
-
-
-  if(
-    newStatus ===
-    "done"
-  ){
-
-    jobs[index].done_at =
-      now;
-
-    jobs[index].status =
-      "done";
-
-  }
-
-
-  if(
-    newStatus ===
-    "leave"
-  ){
-
-    jobs[index].leave_at =
-      now;
-
-    jobs[index].status =
-      "completed";
-
-    jobs[index].completed =
-      true;
-
-  }
-
-
-  saveJobs(jobs);
-
-  renderAll();
-
-}
-
-
-/* =====================================================
-   TIMER
-===================================================== */
-
-function getTimerInfo(job){
-
-  let start =
-    null;
-
-  let duration =
-    0;
-
-  let label =
-    "";
-
-
-  if(
-    job.status ===
-    "departed"
-  ){
-
-    start =
-      job.departed_at;
-
-    duration =
-      40 * 60 * 1000;
-
-    label =
-      "เวลาที่กำหนดให้ถึงหน้างาน";
-
-  }
-
-
-  else if(
-    job.status ===
-    "onsite"
-  ){
-
-    start =
-      job.onsite_at;
-
-    duration =
-      115 * 60 * 1000;
-
-    label =
-      "เวลาที่กำหนดให้ปฏิบัติงาน";
-
-  }
-
-
-  else if(
-    job.status ===
-    "done"
-  ){
-
-    start =
-      job.done_at;
-
-    duration =
-      25 * 60 * 1000;
-
-    label =
-      "เวลาที่กำหนดก่อนออกจากหน้างาน";
-
-  }
-
-
-  else{
-
-    return null;
-
-  }
-
-
-  const endTime =
-    new Date(start).getTime() +
-    duration;
-
-
-  return {
-
-    remaining:
-      endTime - Date.now(),
-
-    label:
-      label
+      false
 
   };
 
+
+  jobs.push(job);
+
+  saveJobs(jobs);
+
+
+
+  document.getElementById(
+    "jobNumber"
+  ).value="";
+
+
+  document.getElementById(
+    "jobDate"
+  ).value="";
+
+
+  document.getElementById(
+    "jobTime"
+  ).value="";
+
+
+  document.getElementById(
+    "jobRemark"
+  ).value="";
+
+
+  showMessage(
+    "✅ เพิ่ม Job เรียบร้อย"
+  );
+
+
+  renderAll();
+
 }
 
 
+
 /* =====================================================
-   TIMER FORMAT
+   FORMAT TIME
 ===================================================== */
 
-function formatRemaining(
-  milliseconds
-){
+function formatTime(timestamp){
 
-  const seconds =
-    Math.max(
-      0,
-      Math.floor(
-        milliseconds / 1000
-      )
-    );
+  if(!timestamp){
+
+    return "-";
+
+  }
+
+
+  const date =
+    new Date(timestamp);
+
+
+  return date.toLocaleString(
+    "th-TH",
+    {
+      dateStyle:"short",
+      timeStyle:"medium"
+    }
+  );
+
+}
+
+
+
+/* =====================================================
+   FORMAT COUNTDOWN
+===================================================== */
+
+function formatCountdown(ms){
+
+  if(ms <= 0){
+
+    return "00:00:00";
+
+  }
+
+
+  const totalSeconds =
+    Math.floor(ms / 1000);
 
 
   const hours =
     Math.floor(
-      seconds / 3600
+      totalSeconds / 3600
     );
 
 
   const minutes =
     Math.floor(
-      (seconds % 3600) / 60
+      (totalSeconds % 3600) / 60
     );
 
 
-  const sec =
-    seconds % 60;
+  const seconds =
+    totalSeconds % 60;
 
 
   return [
 
-    String(hours)
-      .padStart(2,"0"),
+    String(hours).padStart(2,"0"),
 
-    String(minutes)
-      .padStart(2,"0"),
+    String(minutes).padStart(2,"0"),
 
-    String(sec)
-      .padStart(2,"0")
+    String(seconds).padStart(2,"0")
 
   ].join(":");
 
 }
 
 
+
 /* =====================================================
-   ACTIVE JOB
+   GET ACTIVE JOB
 ===================================================== */
 
-function renderActiveJob(){
+function getActiveJob(){
 
-  const container =
-    document.getElementById(
-      "activeJob"
-    );
+  const jobs =
+    getJobs();
 
+
+  return jobs.find(
+    job =>
+      job.status === "DEPARTED" ||
+      job.status === "ONSITE" ||
+      job.status === "DONE"
+  ) || null;
+
+}
+
+
+
+/* =====================================================
+   START DEPARTED
+===================================================== */
+
+function startDeparted(id){
 
   const jobs =
     getJobs();
@@ -1165,88 +683,279 @@ function renderActiveJob(){
   const active =
     jobs.find(
       job =>
-        !job.completed &&
-        (
-          job.status ===
-            "departed" ||
-
-          job.status ===
-            "onsite" ||
-
-          job.status ===
-            "done"
-        )
+        job.status === "DEPARTED" ||
+        job.status === "ONSITE" ||
+        job.status === "DONE"
     );
 
 
-  if(!active){
+  if(active){
 
-    container.innerHTML = `
-
-      <div class="empty">
-
-        ไม่มี Job ที่กำลังปฏิบัติงาน
-
-      </div>
-
-    `;
+    alert(
+      "มี Job ที่กำลังปฏิบัติงานอยู่แล้ว"
+    );
 
     return;
 
   }
 
 
-  const timer =
-    getTimerInfo(active);
+  const job =
+    jobs.find(
+      job =>
+        job.id === id
+    );
 
 
-  let button = "";
+  if(!job){
 
-
-  if(
-    active.status ===
-    "departed"
-  ){
-
-    button = `
-
-      <button
-        class="btn-green"
-        onclick="
-          updateJobStatus(
-            ${active.id},
-            'onsite'
-          )
-        "
-      >
-
-        ONSITE
-
-      </button>
-
-    `;
+    return;
 
   }
 
 
-  else if(
-    active.status ===
-    "onsite"
-  ){
+  job.status =
+    "DEPARTED";
 
-    button = `
+
+  job.departed_at =
+    Date.now();
+
+
+  saveJobs(jobs);
+
+
+  sendLocalNotification(
+    "🚗 DEPARTED",
+    `Job ${job.jobNumber} ออกเดินทางแล้ว`
+  );
+
+
+  renderAll();
+
+}
+
+
+
+/* =====================================================
+   ONSITE
+===================================================== */
+
+function setOnsite(id){
+
+  const jobs =
+    getJobs();
+
+
+  const job =
+    jobs.find(
+      job =>
+        job.id === id
+    );
+
+
+  if(!job){
+
+    return;
+
+  }
+
+
+  job.status =
+    "ONSITE";
+
+
+  job.onsite_at =
+    Date.now();
+
+
+  saveJobs(jobs);
+
+
+  sendLocalNotification(
+    "📍 ONSITE",
+    `Job ${job.jobNumber} ถึงหน้างานแล้ว`
+  );
+
+
+  renderAll();
+
+}
+
+
+
+/* =====================================================
+   DONE
+===================================================== */
+
+function setDone(id){
+
+  const jobs =
+    getJobs();
+
+
+  const job =
+    jobs.find(
+      job =>
+        job.id === id
+    );
+
+
+  if(!job){
+
+    return;
+
+  }
+
+
+  job.status =
+    "DONE";
+
+
+  job.done_at =
+    Date.now();
+
+
+  saveJobs(jobs);
+
+
+  sendLocalNotification(
+    "✅ DONE",
+    `Job ${job.jobNumber} ทำงานเสร็จแล้ว`
+  );
+
+
+  renderAll();
+
+}
+
+
+
+/* =====================================================
+   LEAVE
+===================================================== */
+
+function setLeave(id){
+
+  const jobs =
+    getJobs();
+
+
+  const job =
+    jobs.find(
+      job =>
+        job.id === id
+    );
+
+
+  if(!job){
+
+    return;
+
+  }
+
+
+  job.status =
+    "LEAVE";
+
+
+  job.leave_at =
+    Date.now();
+
+
+  job.completed =
+    true;
+
+
+  saveJobs(jobs);
+
+
+  sendLocalNotification(
+    "🏠 LEAVE",
+    `Job ${job.jobNumber} ออกจากหน้างานแล้ว`
+  );
+
+
+  renderAll();
+
+}
+
+
+
+/* =====================================================
+   ACTIVE JOB RENDER
+===================================================== */
+
+function renderActiveJob(){
+
+  const section =
+    document.getElementById(
+      "activeJobSection"
+    );
+
+
+  const container =
+    document.getElementById(
+      "activeJob"
+    );
+
+
+  const job =
+    getActiveJob();
+
+
+  if(!job){
+
+    section.classList.add(
+      "hidden"
+    );
+
+    container.innerHTML =
+      "";
+
+    return;
+
+  }
+
+
+  section.classList.remove(
+    "hidden"
+  );
+
+
+  let countdown =
+    "";
+
+
+  let nextButton =
+    "";
+
+
+  let startTime =
+    null;
+
+
+  let duration =
+    0;
+
+
+
+  if(job.status === "DEPARTED"){
+
+    startTime =
+      job.departed_at;
+
+    duration =
+      40 * 60 * 1000;
+
+
+    nextButton = `
 
       <button
         class="btn-blue"
-        onclick="
-          updateJobStatus(
-            ${active.id},
-            'done'
-          )
-        "
-      >
+        onclick="setOnsite(${job.id})">
 
-        DONE
+        📍 ONSITE
 
       </button>
 
@@ -1255,108 +964,103 @@ function renderActiveJob(){
   }
 
 
-  else if(
-    active.status ===
-    "done"
-  ){
 
-    button = `
+  if(job.status === "ONSITE"){
+
+    startTime =
+      job.onsite_at;
+
+    duration =
+      115 * 60 * 1000;
+
+
+    nextButton = `
+
+      <button
+        class="btn-green"
+        onclick="setDone(${job.id})">
+
+        ✅ DONE
+
+      </button>
+
+    `;
+
+  }
+
+
+
+  if(job.status === "DONE"){
+
+    startTime =
+      job.done_at;
+
+    duration =
+      25 * 60 * 1000;
+
+
+    nextButton = `
 
       <button
         class="btn-orange"
-        onclick="
-          updateJobStatus(
-            ${active.id},
-            'leave'
-          )
-        "
-      >
+        onclick="setLeave(${job.id})">
 
-        LEAVE
+        🏠 LEAVE
 
       </button>
 
     `;
 
   }
+
+
+
+  const remaining =
+    startTime
+      ? startTime + duration - Date.now()
+      : 0;
+
+
+  countdown =
+    formatCountdown(
+      remaining
+    );
+
 
 
   container.innerHTML = `
 
-    <div class="job">
+    <div class="job-card">
 
-      <div class="job-number">
-
-        ${escapeHtml(
-          active.jobNumber
-        )}
-
-      </div>
-
-
-      <div class="small">
-
-        ${active.date}
-
-        เวลา ${active.time}
-
-      </div>
-
-
-      <div class="remark">
-
-        ${escapeHtml(
-          active.remark ||
-          "-"
-        )}
-
-      </div>
-
+      <h3>
+        Job ${job.jobNumber}
+      </h3>
 
       <div class="status active">
-
-        ${escapeHtml(
-          active.status
-        )}
-
+        ${job.status}
       </div>
 
+      <p>
+        ${job.remark || "ไม่มี Remark"}
+      </p>
 
-      ${
-        timer
-        ? `
-
-          <div class="timer-label">
-
-            ${timer.label}
-
-          </div>
-
-
-          <div class="timer">
-
-            ${formatRemaining(
-              timer.remaining
-            )}
-
-          </div>
-
-        `
-        : ""
-      }
-
-
-      <div class="button-grid">
-
-        ${button}
-
+      <div class="timer">
+        ${countdown}
       </div>
+
+      <p class="small">
+        เริ่มเวลา:
+        ${formatTime(startTime)}
+      </p>
+
+      ${nextButton}
 
     </div>
 
   `;
 
 }
+
 
 
 /* =====================================================
@@ -1374,127 +1078,94 @@ function renderTodayJobs(){
   const today =
     new Date()
       .toISOString()
-      .slice(0,10);
+      .split("T")[0];
 
 
   const jobs =
-    getJobs().filter(
-      job =>
-        job.date ===
-        today
-    );
+    getJobs()
+      .filter(
+        job =>
+          job.date === today
+      );
 
 
-  if(!jobs.length){
+  if(jobs.length === 0){
 
-    container.innerHTML = `
-
-      <div class="empty">
-
+    container.innerHTML =
+      `<p class="small">
         ยังไม่มี Job วันนี้
-
-      </div>
-
-    `;
+      </p>`;
 
     return;
 
   }
 
 
+
   container.innerHTML =
-    jobs
-      .map(
-        job => `
+    jobs.map(
+      job => `
 
-          <div class="job">
+      <div class="history-item">
 
-            <div class="job-number">
+        <strong>
+          ${job.jobNumber}
+        </strong>
 
-              ${escapeHtml(
-                job.jobNumber
-              )}
+        <div>
+          ${job.time}
+        </div>
 
-            </div>
+        <div class="small">
+          ${job.remark || "ไม่มี Remark"}
+        </div>
 
+        <div
+          class="status
+          ${job.completed ? "done" : ""}">
 
-            <div class="small">
+          ${job.status}
 
-              ${job.date}
-              เวลา ${job.time}
-
-            </div>
-
-
-            <div class="remark">
-
-              ${escapeHtml(
-                job.remark ||
-                "-"
-              )}
-
-            </div>
+        </div>
 
 
-            <div class="status">
+        ${
+          job.status === "WAITING"
+          ?
+          `
+          <button
+            onclick="startDeparted(${job.id})">
 
-              ${escapeHtml(
-                job.status
-              )}
+            🚗 DEPARTED
 
-            </div>
+          </button>
+          `
+          :
+          ""
+        }
 
+      </div>
 
-            ${
-              job.status ===
-              "waiting"
-              ? `
-
-                <button
-                  class="btn-green"
-                  style="
-                    width:100%;
-                    margin-top:10px;
-                  "
-                  onclick="
-                    updateJobStatus(
-                      ${job.id},
-                      'departed'
-                    )
-                  "
-                >
-
-                  DEPARTED
-
-                </button>
-
-              `
-              : ""
-            }
-
-          </div>
-
-        `
-      )
-      .join("");
+      `
+    )
+    .join("");
 
 }
+
 
 
 /* =====================================================
    SEARCH
 ===================================================== */
 
-function renderSearch(){
+function searchJobs(){
 
-  const query =
-    document
-      .getElementById(
-        "searchInput"
-      )
-      .value
-      .trim()
-      .toLowerCase();
+  const keyword =
+    document.getElementById(
+      "searchInput"
+    ).value
+    .trim()
+    .toLowerCase();
 
 
   const container =
@@ -1503,17 +1174,10 @@ function renderSearch(){
     );
 
 
-  if(!query){
+  if(!keyword){
 
-    container.innerHTML = `
-
-      <div class="empty">
-
-        พิมพ์เพื่อค้นหา Job
-
-      </div>
-
-    `;
+    container.innerHTML =
+      "";
 
     return;
 
@@ -1521,38 +1185,29 @@ function renderSearch(){
 
 
   const jobs =
-    getJobs().filter(
-      job =>
+    getJobs()
+      .filter(
+        job =>
 
-        String(
           job.jobNumber
-        )
-          .toLowerCase()
-          .includes(query)
+            .toLowerCase()
+            .includes(keyword)
 
-        ||
+          ||
 
-        String(
-          job.remark ||
-          ""
-        )
-          .toLowerCase()
-          .includes(query)
+          (job.remark || "")
+            .toLowerCase()
+            .includes(keyword)
 
-    );
+      );
 
 
-  if(!jobs.length){
+  if(jobs.length === 0){
 
-    container.innerHTML = `
-
-      <div class="empty">
-
+    container.innerHTML =
+      `<p class="small">
         ไม่พบ Job
-
-      </div>
-
-    `;
+      </p>`;
 
     return;
 
@@ -1560,54 +1215,36 @@ function renderSearch(){
 
 
   container.innerHTML =
-    jobs
-      .map(
-        job => `
+    jobs.map(
+      job => `
 
-          <div class="job">
+      <div class="history-item">
 
-            <div class="job-number">
+        <strong>
+          ${job.jobNumber}
+        </strong>
 
-              ${escapeHtml(
-                job.jobNumber
-              )}
+        <div>
+          ${job.date}
+          ${job.time}
+        </div>
 
-            </div>
+        <div>
+          ${job.status}
+        </div>
 
+        <div class="small">
+          ${job.remark || ""}
+        </div>
 
-            <div class="small">
+      </div>
 
-              ${job.date}
-              เวลา ${job.time}
-
-            </div>
-
-
-            <div class="remark">
-
-              ${escapeHtml(
-                job.remark ||
-                "-"
-              )}
-
-            </div>
-
-
-            <div class="status">
-
-              ${escapeHtml(
-                job.status
-              )}
-
-            </div>
-
-          </div>
-
-        `
-      )
-      .join("");
+      `
+    )
+    .join("");
 
 }
+
 
 
 /* =====================================================
@@ -1623,23 +1260,25 @@ function renderHistory(){
 
 
   const jobs =
-    getJobs().filter(
-      job =>
-        job.completed
-    );
+    getJobs()
+      .filter(
+        job =>
+          job.completed === true
+      )
+      .sort(
+        (a,b) =>
+          (b.leave_at || 0)
+          -
+          (a.leave_at || 0)
+      );
 
 
-  if(!jobs.length){
+  if(jobs.length === 0){
 
-    container.innerHTML = `
-
-      <div class="empty">
-
+    container.innerHTML =
+      `<p class="small">
         ยังไม่มีประวัติ Job
-
-      </div>
-
-    `;
+      </p>`;
 
     return;
 
@@ -1647,137 +1286,61 @@ function renderHistory(){
 
 
   container.innerHTML =
-    jobs
-      .map(
-        job => `
+    jobs.map(
+      job => `
 
-          <div class="history-item">
+      <div class="history-item">
 
-            <div class="job-number">
+        <strong>
+          Job ${job.jobNumber}
+        </strong>
 
-              ${escapeHtml(
-                job.jobNumber
-              )}
+        <div>
+          📅 ${job.date}
+        </div>
 
-            </div>
+        <div>
+          🕐 ${job.time}
+        </div>
 
+        <div>
+          📝 ${job.remark || "ไม่มี Remark"}
+        </div>
 
-            <div class="small">
+        <div class="small">
 
-              DEPARTED:
-              ${formatDateTime(
-                job.departed_at
-              )}
+          DEPARTED:
+          ${formatTime(job.departed_at)}
 
-            </div>
+          <br>
 
+          ONSITE:
+          ${formatTime(job.onsite_at)}
 
-            <div class="small">
+          <br>
 
-              ONSITE:
-              ${formatDateTime(
-                job.onsite_at
-              )}
+          DONE:
+          ${formatTime(job.done_at)}
 
-            </div>
+          <br>
 
+          LEAVE:
+          ${formatTime(job.leave_at)}
 
-            <div class="small">
+        </div>
 
-              DONE:
-              ${formatDateTime(
-                job.done_at
-              )}
+      </div>
 
-            </div>
-
-
-            <div class="small">
-
-              LEAVE:
-              ${formatDateTime(
-                job.leave_at
-              )}
-
-            </div>
-
-          </div>
-
-        `
-      )
-      .join("");
+      `
+    )
+    .join("");
 
 }
 
 
-/* =====================================================
-   DATE TIME
-===================================================== */
-
-function formatDateTime(value){
-
-  if(!value){
-
-    return "-";
-
-  }
-
-
-  return new Date(
-    value
-  ).toLocaleString(
-    "th-TH",
-    {
-      dateStyle:
-        "short",
-
-      timeStyle:
-        "short"
-
-    }
-  );
-
-}
-
 
 /* =====================================================
-   ESCAPE HTML
-===================================================== */
-
-function escapeHtml(value){
-
-  return String(value)
-
-    .replaceAll(
-      "&",
-      "&amp;"
-    )
-
-    .replaceAll(
-      "<",
-      "&lt;"
-    )
-
-    .replaceAll(
-      ">",
-      "&gt;"
-    )
-
-    .replaceAll(
-      '"',
-      "&quot;"
-    )
-
-    .replaceAll(
-      "'",
-      "&#039;"
-    );
-
-}
-
-
-/* =====================================================
-   RENDER
+   RENDER ALL
 ===================================================== */
 
 function renderAll(){
@@ -1788,61 +1351,364 @@ function renderAll(){
 
   renderHistory();
 
-  renderSearch();
+  searchJobs();
 
 }
 
 
-/* =====================================================
-   DEFAULT DATE
-===================================================== */
-
-function setDefaultDateTime(){
-
-  const now =
-    new Date();
-
-
-  document
-    .getElementById(
-      "jobDate"
-    )
-    .value =
-      now
-        .toISOString()
-        .slice(0,10);
-
-
-  document
-    .getElementById(
-      "jobTime"
-    )
-    .value =
-      now
-        .toTimeString()
-        .slice(0,5);
-
-}
-
 
 /* =====================================================
-   START
+   LOCAL NOTIFICATION
 ===================================================== */
 
-document.addEventListener(
-  "DOMContentLoaded",
-  () => {
+async function sendLocalNotification(
+  title,
+  body
+){
 
-    setDefaultDateTime();
+  try{
 
-    renderAll();
+    if(
+      "Notification"
+      in window
+      &&
+      Notification.permission ===
+      "granted"
+    ){
+
+      new Notification(
+        title,
+        {
+          body:
+            body
+        }
+      );
+
+    }
+
+  }catch(error){
+
+    console.error(
+      error
+    );
 
   }
-);
+
+}
+
 
 
 /* =====================================================
-   TIMER
+   VAPID BASE64URL CONVERTER
+===================================================== */
+
+function urlBase64ToUint8Array(
+  base64String
+){
+
+  const padding =
+    "=".repeat(
+      (4 -
+        base64String.length % 4
+      ) % 4
+    );
+
+
+  const base64 =
+    (
+      base64String +
+      padding
+    )
+      .replace(
+        /-/g,
+        "+"
+      )
+      .replace(
+        /_/g,
+        "/"
+      );
+
+
+  const rawData =
+    window.atob(
+      base64
+    );
+
+
+  return Uint8Array.from(
+    [...rawData].map(
+      char =>
+        char.charCodeAt(0)
+    )
+  );
+
+}
+
+
+
+/* =====================================================
+   ENABLE WEB PUSH
+===================================================== */
+
+async function enablePush(){
+
+  const status =
+    document.getElementById(
+      "pushStatus"
+    );
+
+
+  try{
+
+    status.textContent =
+      "กำลังเปิดใช้งาน Web Push...";
+
+
+
+    /* ---------------------------------------------
+       CHECK NOTIFICATION
+    --------------------------------------------- */
+
+    if(
+      !("Notification" in window)
+    ){
+
+      throw new Error(
+        "อุปกรณ์นี้ไม่รองรับ Notification"
+      );
+
+    }
+
+
+
+    /* ---------------------------------------------
+       REQUEST PERMISSION
+    --------------------------------------------- */
+
+    const permission =
+      await Notification.requestPermission();
+
+
+    if(
+      permission !==
+      "granted"
+    ){
+
+      throw new Error(
+        "ไม่ได้รับอนุญาตให้ส่ง Notification"
+      );
+
+    }
+
+
+
+    /* ---------------------------------------------
+       CHECK SERVICE WORKER
+    --------------------------------------------- */
+
+    if(
+      !("serviceWorker" in navigator)
+    ){
+
+      throw new Error(
+        "Browser ไม่รองรับ Service Worker"
+      );
+
+    }
+
+
+
+    /* ---------------------------------------------
+       REGISTER SERVICE WORKER
+    --------------------------------------------- */
+
+    const registration =
+      await navigator.serviceWorker.register(
+        "./service-worker.js"
+      );
+
+
+    await navigator.serviceWorker.ready;
+
+
+
+    /* ---------------------------------------------
+       CHECK PUSH
+    --------------------------------------------- */
+
+    if(
+      !("PushManager" in window)
+    ){
+
+      throw new Error(
+        "อุปกรณ์นี้ไม่รองรับ Web Push"
+      );
+
+    }
+
+
+
+    /* ---------------------------------------------
+       CHECK EXISTING SUBSCRIPTION
+    --------------------------------------------- */
+
+    let subscription =
+      await registration.pushManager.getSubscription();
+
+
+
+    /* ---------------------------------------------
+       CREATE SUBSCRIPTION
+    --------------------------------------------- */
+
+    if(!subscription){
+
+      subscription =
+        await registration.pushManager.subscribe({
+
+          userVisibleOnly:
+            true,
+
+          applicationServerKey:
+            urlBase64ToUint8Array(
+              VAPID_PUBLIC_KEY
+            )
+
+        });
+
+    }
+
+
+
+    /* ---------------------------------------------
+       SAVE SUBSCRIPTION
+    --------------------------------------------- */
+
+    localStorage.setItem(
+
+      PUSH_STORAGE_KEY,
+
+      JSON.stringify(
+        subscription
+      )
+
+    );
+
+
+
+    /* ---------------------------------------------
+       SUCCESS
+    --------------------------------------------- */
+
+    status.innerHTML =
+      "✅ Web Push Subscription สำเร็จ";
+
+
+    console.log(
+      "WEB PUSH SUBSCRIPTION:",
+      JSON.stringify(
+        subscription
+      )
+    );
+
+
+    alert(
+      "✅ เปิดใช้งาน Web Push สำเร็จ"
+    );
+
+
+  }catch(error){
+
+    console.error(
+      "Web Push Error:",
+      error
+    );
+
+
+    status.textContent =
+      "❌ Web Push ไม่สำเร็จ";
+
+
+    alert(
+      "Web Push ไม่สำเร็จ\n\n" +
+      error.message
+    );
+
+  }
+
+}
+
+
+
+/* =====================================================
+   CHECK PUSH STATUS
+===================================================== */
+
+function checkPushStatus(){
+
+  const status =
+    document.getElementById(
+      "pushStatus"
+    );
+
+
+  const saved =
+    localStorage.getItem(
+      PUSH_STORAGE_KEY
+    );
+
+
+  if(saved){
+
+    status.innerHTML =
+      "✅ Web Push เปิดใช้งานแล้ว";
+
+  }
+
+}
+
+
+
+/* =====================================================
+   SERVICE WORKER
+===================================================== */
+
+if(
+  "serviceWorker"
+  in navigator
+){
+
+  navigator.serviceWorker
+    .register(
+      "./service-worker.js"
+    )
+    .then(
+      registration => {
+
+        console.log(
+          "[JOB TIME] Service Worker registered:",
+          registration.scope
+        );
+
+      }
+    )
+    .catch(
+      error => {
+
+        console.error(
+          "[JOB TIME] Service Worker error:",
+          error
+        );
+
+      }
+    );
+
+}
+
+
+
+/* =====================================================
+   TIMER UPDATE
 ===================================================== */
 
 setInterval(
@@ -1854,7 +1720,37 @@ setInterval(
   1000
 );
 
+
+
+/* =====================================================
+   INITIAL LOAD
+===================================================== */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+
+    const today =
+      new Date()
+        .toISOString()
+        .split("T")[0];
+
+
+    document.getElementById(
+      "jobDate"
+    ).value =
+      today;
+
+
+    checkPushStatus();
+
+    renderAll();
+
+  }
+);
+
 </script>
+
 
 </body>
 
