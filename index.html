@@ -1,880 +1,337 @@
 <!DOCTYPE html>
 <html lang="th">
-
 <head>
-
 <meta charset="UTF-8">
-
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
-
-<meta name="theme-color"
-      content="#111827">
-
-<meta name="apple-mobile-web-app-capable"
-      content="yes">
-
-<meta name="apple-mobile-web-app-status-bar-style"
-      content="default">
-
-<meta name="apple-mobile-web-app-title"
-      content="JOB TIME">
-
-<link rel="manifest"
-      href="./manifest.json">
-
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#111827">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="JOB TIME">
+<link rel="manifest" href="./manifest.json">
 <title>JOB TIME</title>
 
-
-<!-- =====================================================
-     FIREBASE
-===================================================== -->
-
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
-
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-installations-compat.js"></script>
-
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging-compat.js"></script>
 
-
 <script>
-
-const firebaseConfig = {
-
-  apiKey:
-    "AIzaSyC2d9YhQYkJDJpPz-kK9MFgoeN9JNhAOM",
-
-  authDomain:
-    "ola-job-f75b0.firebaseapp.com",
-
-  projectId:
-    "ola-job-f75b0",
-
-  storageBucket:
-    "ola-job-f75b0.firebasestorage.app",
-
-  messagingSenderId:
-    "619901142506",
-
-  appId:
-    "1:619901142506:web:bf1aec74f6448bf6ffde93",
-
-  measurementId:
-    "G-4DC0PHEQH1"
-
+const firebaseConfig={
+  apiKey:"AIzaSyC2d9YhQYkJDJpPz-kK9MFgoeN9JNhAOM",
+  authDomain:"ola-job-f75b0.firebaseapp.com",
+  projectId:"ola-job-f75b0",
+  storageBucket:"ola-job-f75b0.firebasestorage.app",
+  messagingSenderId:"619901142506",
+  appId:"1:619901142506:web:bf1aec74f6448bf6ffde93",
+  measurementId:"G-4DC0PHEQH1"
 };
 
+firebase.initializeApp(firebaseConfig);
 
-firebase.initializeApp(
-  firebaseConfig
-);
+const firebaseMessaging=firebase.messaging();
+const firebaseInstallations=firebase.installations();
 
+const FCM_VAPID_KEY=
+"BHdcwG22SK0Rqec8MSACS8wYVwnWHuXxrPj-rm4tOVQpvzWpL0COJeEmjy-gF5GmzU0AoorV9dR16DfFVIfAfOI";
 
-const firebaseMessaging =
-  firebase.messaging();
+async function testFirebaseInstallations(){
 
+  const status=document.getElementById("notificationStatus");
 
-const FCM_VAPID_KEY =
-  "BHdcwG22SK0Rqec8MSACS8wYVwnWHuXxrPj-rm4tOVQpvzWpL0COJeEmjy-gF5GmzU0AoorV9dR16DfFVIfAfOI";
+  try{
 
+    status.innerHTML="🟡 กำลังทดสอบ Firebase Installations...";
 
-/* =====================================================
-   FIREBASE INSTALLATIONS
-===================================================== */
+    const installationId=await firebaseInstallations.getId();
 
-const firebaseInstallations =
-  firebase.installations();
+    localStorage.setItem("firebaseInstallationId",installationId);
 
+    const box=document.getElementById("installationBox");
+    const element=document.getElementById("installationId");
 
-/* =====================================================
-   TEST FIREBASE INSTALLATIONS
-===================================================== */
+    if(box)box.style.display="block";
+    if(element)element.textContent=installationId;
 
-async function testFirebaseInstallations() {
-
-  const status =
-    document.getElementById(
-      "notificationStatus"
-    );
-
-  try {
-
-    status.innerHTML =
-      "🟡 กำลังทดสอบ Firebase Installations...";
-
-
-    const installationId =
-      await firebaseInstallations.getId();
-
-
-    console.log(
-      "Firebase Installation ID:",
-      installationId
-    );
-
-
-    localStorage.setItem(
-      "firebaseInstallationId",
-      installationId
-    );
-
-
-    const box =
-      document.getElementById(
-        "installationBox"
-      );
-
-
-    const element =
-      document.getElementById(
-        "installationId"
-      );
-
-
-    if (box) {
-
-      box.style.display =
-        "block";
-
-    }
-
-
-    if (element) {
-
-      element.textContent =
-        installationId;
-
-    }
-
-
-    status.innerHTML =
-
-      '<span class="status-ok">' +
-
-      '🟢 Firebase Installations ใช้งานได้' +
-
-      '</span>' +
-
-      '<br><br>' +
-
-      '<span class="small">' +
-
-      'Installation ID:<br>' +
-
-      '<b>' +
-
-      escapeHTML(
-        installationId
-      ) +
-
-      '</b>' +
-
-      '</span>';
-
+    status.innerHTML=
+      '<span class="status-ok">🟢 Firebase Installations ใช้งานได้</span>'+
+      '<br><br><span class="small">Installation ID:<br><b>'+
+      escapeHTML(installationId)+
+      '</b></span>';
 
     alert(
-
-      "✅ Firebase Installations ใช้งานได้\n\n" +
-
-      "Installation ID:\n" +
-
-      installationId
-
+      "✅ Firebase Installations ใช้งานได้\n\n"+
+      "Installation ID:\n"+installationId
     );
-
 
     return installationId;
 
+  }catch(error){
 
-  } catch(error) {
+    const message=error?.message||String(error);
 
-    console.error(
-      "Firebase Installations Error:",
-      error
-    );
-
-
-    const message =
-      error?.message ||
-      String(error);
-
-
-    status.innerHTML =
-
-      '<span class="status-error">' +
-
-      '🔴 Firebase Installations ไม่สำเร็จ' +
-
-      '</span>' +
-
-      '<br>' +
-
-      '<span class="small">' +
-
-      escapeHTML(
-        message
-      ) +
-
-      '</span>';
-
+    status.innerHTML=
+      '<span class="status-error">🔴 Firebase Installations ไม่สำเร็จ</span>'+
+      '<br><span class="small">'+escapeHTML(message)+"</span>";
 
     alert(
-
-      "❌ Firebase Installations ไม่สำเร็จ\n\n" +
-
-      message
-
+      "❌ Firebase Installations ไม่สำเร็จ\n\n"+message
     );
 
-
     return null;
-
   }
-
 }
-
 </script>
 
-
 <style>
+*{box-sizing:border-box}
 
-* {
-  box-sizing: border-box;
+body{
+margin:0;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+background:#f4f6f8;
+color:#222
 }
 
-body {
-
-  margin: 0;
-
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
-
-  background: #f4f6f8;
-
-  color: #222;
+header{
+background:#111827;
+color:white;
+padding:22px 18px;
+text-align:center
 }
 
+header h1{margin:0;font-size:28px}
+header p{margin:6px 0 0;opacity:.8}
 
-header {
+.container{max-width:600px;margin:auto;padding:15px}
 
-  background: #111827;
-
-  color: white;
-
-  padding: 22px 18px;
-
-  text-align: center;
+.card{
+background:white;
+border-radius:18px;
+padding:18px;
+margin-bottom:15px;
+box-shadow:0 3px 12px rgba(0,0,0,.08)
 }
 
+.clock{text-align:center}
+#clock{font-size:36px;font-weight:bold}
+#date{color:#666;margin-top:5px}
 
-header h1 {
+h2{margin-top:0}
 
-  margin: 0;
+.job-number{font-size:24px;font-weight:bold}
+.remark{color:#555;margin:8px 0}
 
-  font-size: 28px;
+.status{
+display:inline-block;
+padding:7px 12px;
+border-radius:20px;
+background:#e5e7eb;
+margin:5px 0;
+font-size:14px
 }
 
-
-header p {
-
-  margin: 6px 0 0;
-
-  opacity: .8;
+.countdown{
+text-align:center;
+font-size:40px;
+font-weight:bold;
+margin:15px 0
 }
 
-
-.container {
-
-  max-width: 600px;
-
-  margin: auto;
-
-  padding: 15px;
+button{
+width:100%;
+border:0;
+border-radius:12px;
+padding:14px;
+margin-top:8px;
+font-size:16px;
+font-weight:bold
 }
 
+.btn-main{background:#111827;color:white}
+.btn-green{background:#16a34a;color:white}
+.btn-blue{background:#2563eb;color:white}
+.btn-orange{background:#f97316;color:white}
+.btn-red{background:#dc2626;color:white}
+.btn-test{background:#7c3aed;color:white}
+.btn-gray{background:#e5e7eb;color:#111}
 
-.card {
-
-  background: white;
-
-  border-radius: 18px;
-
-  padding: 18px;
-
-  margin-bottom: 15px;
-
-  box-shadow:
-    0 3px 12px rgba(0,0,0,.08);
+input,textarea{
+width:100%;
+padding:13px;
+margin-top:6px;
+margin-bottom:12px;
+border:1px solid #ddd;
+border-radius:10px;
+font-size:16px
 }
 
+label{font-weight:bold;font-size:14px}
 
-.clock {
-
-  text-align: center;
+.job-item{
+border-top:1px solid #eee;
+padding:14px 0
 }
 
+.job-item:first-child{border-top:0}
 
-#clock {
+.search{margin-bottom:10px}
+.empty{text-align:center;color:#888;padding:20px}
 
-  font-size: 36px;
-
-  font-weight: bold;
+.modal{
+display:none;
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.5);
+z-index:1000;
+padding:20px
 }
 
-
-#date {
-
-  color: #666;
-
-  margin-top: 5px;
+.modal-box{
+background:white;
+border-radius:18px;
+padding:20px;
+max-width:500px;
+margin:60px auto
 }
 
+.small{font-size:13px;color:#777}
 
-h2 {
-
-  margin-top: 0;
+.notification-box{
+background:#faf5ff;
+border:1px solid #ddd6fe
 }
 
+.status-ok{font-weight:bold;color:#16a34a}
+.status-error{color:#dc2626;font-weight:bold}
 
-.job-number {
-
-  font-size: 24px;
-
-  font-weight: bold;
+.test-info{
+background:#f3e8ff;
+border-radius:12px;
+padding:12px;
+margin-top:10px;
+font-size:14px
 }
 
-
-.remark {
-
-  color: #555;
-
-  margin: 8px 0;
+.banner{
+position:fixed;
+left:15px;
+right:15px;
+bottom:20px;
+z-index:9999;
+background:#111827;
+color:white;
+padding:18px;
+border-radius:16px;
+box-shadow:0 5px 20px rgba(0,0,0,.3)
 }
 
+.banner strong{font-size:17px}
+.banner button{background:white;color:#111827}
 
-.status {
-
-  display: inline-block;
-
-  padding: 7px 12px;
-
-  border-radius: 20px;
-
-  background: #e5e7eb;
-
-  margin: 5px 0;
-
-  font-size: 14px;
+#fcmTokenBox{
+margin-top:12px;
+padding:12px;
+background:#f9fafb;
+border-radius:12px;
+border:1px solid #e5e7eb
 }
 
-
-.countdown {
-
-  text-align: center;
-
-  font-size: 40px;
-
-  font-weight: bold;
-
-  margin: 15px 0;
+#fcmToken{
+font-size:11px;
+line-height:1.4;
+word-break:break-all;
+background:white
 }
 
-
-button {
-
-  width: 100%;
-
-  border: 0;
-
-  border-radius: 12px;
-
-  padding: 14px;
-
-  margin-top: 8px;
-
-  font-size: 16px;
-
-  font-weight: bold;
+.installation-box{
+margin-top:12px;
+padding:12px;
+background:#ecfdf5;
+border:1px solid #bbf7d0;
+border-radius:12px;
+font-size:13px;
+word-break:break-all
 }
-
-
-.btn-main {
-
-  background: #111827;
-
-  color: white;
-}
-
-
-.btn-green {
-
-  background: #16a34a;
-
-  color: white;
-}
-
-
-.btn-blue {
-
-  background: #2563eb;
-
-  color: white;
-}
-
-
-.btn-orange {
-
-  background: #f97316;
-
-  color: white;
-}
-
-
-.btn-red {
-
-  background: #dc2626;
-
-  color: white;
-}
-
-
-.btn-test {
-
-  background: #7c3aed;
-
-  color: white;
-}
-
-
-.btn-gray {
-
-  background: #e5e7eb;
-
-  color: #111;
-}
-
-
-input,
-textarea {
-
-  width: 100%;
-
-  padding: 13px;
-
-  margin-top: 6px;
-
-  margin-bottom: 12px;
-
-  border: 1px solid #ddd;
-
-  border-radius: 10px;
-
-  font-size: 16px;
-}
-
-
-label {
-
-  font-weight: bold;
-
-  font-size: 14px;
-}
-
-
-.job-item {
-
-  border-top: 1px solid #eee;
-
-  padding: 14px 0;
-}
-
-
-.job-item:first-child {
-
-  border-top: 0;
-}
-
-
-.search {
-
-  margin-bottom: 10px;
-}
-
-
-.empty {
-
-  text-align: center;
-
-  color: #888;
-
-  padding: 20px;
-}
-
-
-.modal {
-
-  display: none;
-
-  position: fixed;
-
-  inset: 0;
-
-  background: rgba(0,0,0,.5);
-
-  z-index: 1000;
-
-  padding: 20px;
-}
-
-
-.modal-box {
-
-  background: white;
-
-  border-radius: 18px;
-
-  padding: 20px;
-
-  max-width: 500px;
-
-  margin: 60px auto;
-}
-
-
-.small {
-
-  font-size: 13px;
-
-  color: #777;
-}
-
-
-.notification-box {
-
-  background: #faf5ff;
-
-  border: 1px solid #ddd6fe;
-}
-
-
-.status-ok {
-
-  font-weight: bold;
-
-  color: #16a34a;
-}
-
-
-.status-error {
-
-  color: #dc2626;
-
-  font-weight: bold;
-}
-
-
-.test-info {
-
-  background: #f3e8ff;
-
-  border-radius: 12px;
-
-  padding: 12px;
-
-  margin-top: 10px;
-
-  font-size: 14px;
-}
-
-
-.banner {
-
-  position: fixed;
-
-  left: 15px;
-
-  right: 15px;
-
-  bottom: 20px;
-
-  z-index: 9999;
-
-  background: #111827;
-
-  color: white;
-
-  padding: 18px;
-
-  border-radius: 16px;
-
-  box-shadow:
-    0 5px 20px rgba(0,0,0,.3);
-}
-
-
-.banner strong {
-
-  font-size: 17px;
-}
-
-
-.banner button {
-
-  background: white;
-
-  color: #111827;
-}
-
-
-#fcmTokenBox {
-
-  margin-top: 12px;
-
-  padding: 12px;
-
-  background: #f9fafb;
-
-  border-radius: 12px;
-
-  border: 1px solid #e5e7eb;
-}
-
-
-#fcmToken {
-
-  font-size: 11px;
-
-  line-height: 1.4;
-
-  word-break: break-all;
-
-  background: white;
-}
-
-
-.installation-box {
-
-  margin-top: 12px;
-
-  padding: 12px;
-
-  background: #ecfdf5;
-
-  border: 1px solid #bbf7d0;
-
-  border-radius: 12px;
-
-  font-size: 13px;
-
-  word-break: break-all;
-}
-
 </style>
-
 </head>
-
 
 <body>
 
-
 <header>
-
 <h1>⏰ JOB TIME</h1>
-
-<p>
-ระบบแจ้งเตือนการปฏิบัติงาน
-</p>
-
+<p>ระบบแจ้งเตือนการปฏิบัติงาน</p>
 </header>
-
 
 <div class="container">
 
-
-<!-- =====================================================
-     CLOCK
-===================================================== -->
-
 <div class="card clock">
-
-<div id="clock">
-00:00:00
+<div id="clock">00:00:00</div>
+<div id="date">-</div>
 </div>
-
-<div id="date">
--
-</div>
-
-</div>
-
-
-<!-- =====================================================
-     CURRENT JOB
-===================================================== -->
 
 <div class="card">
-
-<h2>
-📌 JOB ปัจจุบัน
-</h2>
-
+<h2>📌 JOB ปัจจุบัน</h2>
 <div id="currentJob">
-
-<div class="empty">
-ยังไม่มี JOB ที่กำลังทำงาน
+<div class="empty">ยังไม่มี JOB ที่กำลังทำงาน</div>
 </div>
-
 </div>
-
-</div>
-
-
-<!-- =====================================================
-     ADD JOB
-===================================================== -->
 
 <div class="card">
-
-<button
-class="btn-main"
-onclick="openModal()">
-
-＋ เพิ่ม Job
-
-</button>
-
+<button class="btn-main" onclick="openModal()">＋ เพิ่ม Job</button>
 </div>
-
-
-<!-- =====================================================
-     NOTIFICATION
-===================================================== -->
 
 <div class="card notification-box">
 
-<h2>
-🔔 ระบบแจ้งเตือน
-</h2>
+<h2>🔔 ระบบแจ้งเตือน</h2>
 
+<p id="notificationStatus">กำลังตรวจสอบสถานะ...</p>
 
-<p id="notificationStatus">
-กำลังตรวจสอบสถานะ...
-</p>
-
-
-<button
-class="btn-test"
-onclick="testFirebaseInstallations()">
-
+<button class="btn-test" onclick="testFirebaseInstallations()">
 🧪 ทดสอบ Firebase Installations
-
 </button>
 
-
-<button
-class="btn-test"
-onclick="enableNotifications()">
-
+<button class="btn-test" onclick="enableNotifications()">
 🔔 เปิดใช้งานการแจ้งเตือน
-
 </button>
 
-
-<button
-class="btn-test"
-onclick="testNotification()">
-
+<button class="btn-test" onclick="testNotification()">
 🧪 ทดสอบแจ้งเตือนทันที
-
 </button>
 
-
-<div
-id="installationBox"
-class="installation-box"
-style="display:none;">
-
-<b>
-Firebase Installation ID
-</b>
-
-<div id="installationId">
--
+<div id="installationBox" class="installation-box" style="display:none">
+<b>Firebase Installation ID</b>
+<div id="installationId">-</div>
 </div>
 
-</div>
+<div id="fcmTokenBox" style="display:none">
 
+<label>Firebase Registration Token</label>
 
-<div
-id="fcmTokenBox"
-style="display:none;">
+<textarea id="fcmToken" rows="5" readonly></textarea>
 
-<label>
-Firebase Registration Token
-</label>
-
-<textarea
-id="fcmToken"
-rows="5"
-readonly>
-</textarea>
-
-
-<button
-class="btn-gray"
-onclick="copyFCMToken()">
-
+<button class="btn-gray" onclick="copyFCMToken()">
 📋 คัดลอก Token
-
 </button>
 
 </div>
-
 
 <div class="test-info">
-
 <b>TEST TIMER</b>
-
 <br><br>
-
 DEPARTED → 10 วินาที → ONSITE
-
 <br>
-
 ONSITE → 20 วินาที → DONE
-
 <br>
-
 DONE → 10 วินาที → LEAVE
-
 </div>
 
-
-<button
-class="btn-test"
-onclick="startTestTimer()">
-
+<button class="btn-test" onclick="startTestTimer()">
 🧪 เริ่ม TEST TIMER
-
 </button>
 
-
 </div>
 
-
-<!-- =====================================================
-     TODAY
-===================================================== -->
-
 <div class="card">
-
-<h2>
-📅 งานวันนี้
-</h2>
-
+<h2>📅 งานวันนี้</h2>
 
 <input
 id="searchInput"
@@ -883,109 +340,44 @@ type="text"
 placeholder="🔎 ค้นหา Job หรือ Remark"
 oninput="renderToday()">
 
-
-<div id="todayJobs">
+<div id="todayJobs"></div>
 </div>
-
-</div>
-
-
-<!-- =====================================================
-     HISTORY
-===================================================== -->
 
 <div class="card">
-
-<h2>
-📚 ประวัติ JOB
-</h2>
-
-
-<div id="history">
+<h2>📚 ประวัติ JOB</h2>
+<div id="history"></div>
 </div>
 
 </div>
 
-
-</div>
-
-
-<!-- =====================================================
-     ADD JOB MODAL
-===================================================== -->
-
-<div
-class="modal"
-id="jobModal">
+<div class="modal" id="jobModal">
 
 <div class="modal-box">
 
+<h2>＋ เพิ่ม Job</h2>
 
-<h2>
-＋ เพิ่ม Job
-</h2>
+<label>เลข Job</label>
+<input id="jobNumber" placeholder="เช่น JOB-00125">
 
+<label>วันที่</label>
+<input id="jobDate" type="date">
 
-<label>
-เลข Job
-</label>
+<label>เวลา</label>
+<input id="jobTime" type="time">
 
-<input
-id="jobNumber"
-placeholder="เช่น JOB-00125">
+<label>Remark</label>
+<textarea id="jobRemark" rows="3" placeholder="รายละเอียดงาน"></textarea>
 
-
-<label>
-วันที่
-</label>
-
-<input
-id="jobDate"
-type="date">
-
-
-<label>
-เวลา
-</label>
-
-<input
-id="jobTime"
-type="time">
-
-
-<label>
-Remark
-</label>
-
-<textarea
-id="jobRemark"
-rows="3"
-placeholder="รายละเอียดงาน">
-</textarea>
-
-
-<button
-class="btn-green"
-onclick="saveJob()">
-
+<button class="btn-green" onclick="saveJob()">
 💾 บันทึก Job
-
 </button>
 
-
-<button
-class="btn-red"
-onclick="closeModal()">
-
+<button class="btn-red" onclick="closeModal()">
 ยกเลิก
-
 </button>
 
-
 </div>
-
 </div>
-
 
 <script>
 
@@ -993,23 +385,15 @@ onclick="closeModal()">
    DATA
 ===================================================== */
 
-let jobs =
-JSON.parse(
-  localStorage.getItem("jobs") || "[]"
+let jobs=JSON.parse(
+  localStorage.getItem("jobs")||"[]"
 );
 
-
-let notifiedJobs =
-JSON.parse(
-  localStorage.getItem("notifiedJobs") || "[]"
+let notifiedJobs=JSON.parse(
+  localStorage.getItem("notifiedJobs")||"[]"
 );
 
-
-/* =====================================================
-   SAVE
-===================================================== */
-
-function saveData() {
+function saveData(){
 
   localStorage.setItem(
     "jobs",
@@ -1020,984 +404,499 @@ function saveData() {
     "notifiedJobs",
     JSON.stringify(notifiedJobs)
   );
-
 }
-
 
 /* =====================================================
    CLOCK
 ===================================================== */
 
-function updateClock() {
+function updateClock(){
 
-  const now =
-    new Date();
+  const now=new Date();
 
+  document.getElementById("clock").textContent=
+    now.toLocaleTimeString("th-TH");
 
-  document.getElementById(
-    "clock"
-  ).textContent =
-    now.toLocaleTimeString(
-      "th-TH"
-    );
-
-
-  document.getElementById(
-    "date"
-  ).textContent =
+  document.getElementById("date").textContent=
     now.toLocaleDateString(
       "th-TH",
       {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric"
+        weekday:"long",
+        year:"numeric",
+        month:"long",
+        day:"numeric"
       }
     );
-
 }
 
-
-setInterval(
-  updateClock,
-  1000
-);
-
-
+setInterval(updateClock,1000);
 updateClock();
-
 
 /* =====================================================
    MODAL
 ===================================================== */
 
-function openModal() {
+function openModal(){
 
-  document.getElementById(
-    "jobModal"
-  ).style.display =
-    "block";
+  document.getElementById("jobModal").style.display="block";
 
+  const now=new Date();
 
-  const now =
-    new Date();
+  document.getElementById("jobDate").value=
+    now.toISOString().split("T")[0];
 
-
-  document.getElementById(
-    "jobDate"
-  ).value =
-    now.toISOString()
-      .split("T")[0];
-
-
-  document.getElementById(
-    "jobTime"
-  ).value =
-    now.toTimeString()
-      .slice(0,5);
-
+  document.getElementById("jobTime").value=
+    now.toTimeString().slice(0,5);
 }
 
+function closeModal(){
 
-function closeModal() {
-
-  document.getElementById(
-    "jobModal"
-  ).style.display =
-    "none";
-
+  document.getElementById("jobModal").style.display="none";
 }
-
 
 /* =====================================================
    SAVE JOB
 ===================================================== */
 
-function saveJob() {
+function saveJob(){
 
-  const jobNumber =
-    document.getElementById(
-      "jobNumber"
-    ).value.trim();
+  const jobNumber=
+    document.getElementById("jobNumber").value.trim();
 
+  const date=
+    document.getElementById("jobDate").value;
 
-  const date =
-    document.getElementById(
-      "jobDate"
-    ).value;
+  const time=
+    document.getElementById("jobTime").value;
 
+  const remark=
+    document.getElementById("jobRemark").value.trim();
 
-  const time =
-    document.getElementById(
-      "jobTime"
-    ).value;
+  if(!jobNumber){
 
-
-  const remark =
-    document.getElementById(
-      "jobRemark"
-    ).value.trim();
-
-
-  if (!jobNumber) {
-
-    alert(
-      "กรุณาใส่เลข Job"
-    );
-
+    alert("กรุณาใส่เลข Job");
     return;
-
   }
 
+  jobs.push({
 
-  const job = {
+    id:Date.now().toString(),
+    job_number:jobNumber,
+    date:date,
+    time:time,
+    remark:remark,
+    status:"pending",
+    created_at:new Date().toISOString(),
+    departed_at:null,
+    onsite_at:null,
+    done_at:null,
+    leave_at:null,
+    test_mode:false
 
-    id:
-      Date.now().toString(),
-
-    job_number:
-      jobNumber,
-
-    date:
-      date,
-
-    time:
-      time,
-
-    remark:
-      remark,
-
-    status:
-      "pending",
-
-    created_at:
-      new Date().toISOString(),
-
-    departed_at:
-      null,
-
-    onsite_at:
-      null,
-
-    done_at:
-      null,
-
-    leave_at:
-      null,
-
-    test_mode:
-      false
-
-  };
-
-
-  jobs.push(job);
+  });
 
   saveData();
-
   closeModal();
 
-
-  document.getElementById(
-    "jobNumber"
-  ).value = "";
-
-
-  document.getElementById(
-    "jobRemark"
-  ).value = "";
-
+  document.getElementById("jobNumber").value="";
+  document.getElementById("jobRemark").value="";
 
   renderAll();
-
 }
-
 
 /* =====================================================
    DEPARTED
 ===================================================== */
 
-async function departedJob(id) {
+async function departedJob(id){
 
-  const notificationReady =
-    await enableNotifications();
+  const ready=await enableNotifications();
 
+  if(!ready)return;
 
-  if (!notificationReady) {
+  const job=jobs.find(j=>j.id===id);
 
-    return;
+  if(!job)return;
 
-  }
-
-
-  const job =
-    jobs.find(
-      j => j.id === id
-    );
-
-
-  if (!job) return;
-
-
-  job.status =
-    "departed";
-
-
-  job.departed_at =
-    new Date().toISOString();
-
-
-  job.test_mode =
-    false;
-
+  job.status="departed";
+  job.departed_at=new Date().toISOString();
+  job.test_mode=false;
 
   resetNotification(job);
 
   saveData();
-
   renderAll();
-
 }
-
 
 /* =====================================================
    ONSITE
 ===================================================== */
 
-function onsiteJob(id) {
+function onsiteJob(id){
 
-  const job =
-    jobs.find(
-      j => j.id === id
-    );
+  const job=jobs.find(j=>j.id===id);
 
+  if(!job)return;
 
-  if (!job) return;
-
-
-  job.status =
-    "onsite";
-
-
-  job.onsite_at =
-    new Date().toISOString();
-
+  job.status="onsite";
+  job.onsite_at=new Date().toISOString();
 
   resetNotification(job);
 
   saveData();
-
   renderAll();
-
 }
-
 
 /* =====================================================
    DONE
 ===================================================== */
 
-function doneJob(id) {
+function doneJob(id){
 
-  const job =
-    jobs.find(
-      j => j.id === id
-    );
+  const job=jobs.find(j=>j.id===id);
 
+  if(!job)return;
 
-  if (!job) return;
-
-
-  job.status =
-    "done";
-
-
-  job.done_at =
-    new Date().toISOString();
-
+  job.status="done";
+  job.done_at=new Date().toISOString();
 
   resetNotification(job);
 
   saveData();
-
   renderAll();
-
 }
-
 
 /* =====================================================
    LEAVE
 ===================================================== */
 
-function leaveJob(id) {
+function leaveJob(id){
 
-  const job =
-    jobs.find(
-      j => j.id === id
-    );
+  const job=jobs.find(j=>j.id===id);
 
+  if(!job)return;
 
-  if (!job) return;
-
-
-  job.status =
-    "completed";
-
-
-  job.leave_at =
-    new Date().toISOString();
-
+  job.status="completed";
+  job.leave_at=new Date().toISOString();
 
   saveData();
-
   renderAll();
 
-
   notifyUser(
-
     "🏁 JOB TIME",
-
-    "JOB " +
-    job.job_number +
-    " เสร็จสิ้นแล้ว"
-
+    "JOB "+job.job_number+" เสร็จสิ้นแล้ว"
   );
-
 }
-
 
 /* =====================================================
    TARGET TIME
 ===================================================== */
 
-function targetTime(job) {
+function targetTime(job){
 
-  if (job.test_mode) {
+  if(job.test_mode){
 
-    if (
-      job.status ===
-      "departed"
-    ) {
+    if(job.status==="departed")
+      return new Date(job.departed_at).getTime()+10000;
 
-      return new Date(
-        job.departed_at
-      ).getTime()
-      +
-      10 * 1000;
+    if(job.status==="onsite")
+      return new Date(job.onsite_at).getTime()+20000;
 
-    }
-
-
-    if (
-      job.status ===
-      "onsite"
-    ) {
-
-      return new Date(
-        job.onsite_at
-      ).getTime()
-      +
-      20 * 1000;
-
-    }
-
-
-    if (
-      job.status ===
-      "done"
-    ) {
-
-      return new Date(
-        job.done_at
-      ).getTime()
-      +
-      10 * 1000;
-
-    }
-
+    if(job.status==="done")
+      return new Date(job.done_at).getTime()+10000;
   }
 
+  if(job.status==="departed")
+    return new Date(job.departed_at).getTime()+40*60*1000;
 
-  if (
-    job.status ===
-    "departed"
-  ) {
+  if(job.status==="onsite")
+    return new Date(job.onsite_at).getTime()+115*60*1000;
 
-    return new Date(
-      job.departed_at
-    ).getTime()
-    +
-    40 * 60 * 1000;
-
-  }
-
-
-  if (
-    job.status ===
-    "onsite"
-  ) {
-
-    return new Date(
-      job.onsite_at
-    ).getTime()
-    +
-    115 * 60 * 1000;
-
-  }
-
-
-  if (
-    job.status ===
-    "done"
-  ) {
-
-    return new Date(
-      job.done_at
-    ).getTime()
-    +
-    25 * 60 * 1000;
-
-  }
-
+  if(job.status==="done")
+    return new Date(job.done_at).getTime()+25*60*1000;
 
   return null;
-
 }
-
 
 /* =====================================================
    COUNTDOWN
 ===================================================== */
 
-function countdown(job) {
+function countdown(job){
 
-  const target =
-    targetTime(job);
+  const target=targetTime(job);
 
+  if(!target)return "";
 
-  if (!target) {
+  const remaining=Math.max(0,target-Date.now());
 
-    return "";
+  const totalSeconds=Math.floor(remaining/1000);
+  const minutes=Math.floor(totalSeconds/60);
+  const seconds=totalSeconds%60;
 
-  }
-
-
-  const remaining =
-    Math.max(
-      0,
-      target - Date.now()
-    );
-
-
-  const totalSeconds =
-    Math.floor(
-      remaining / 1000
-    );
-
-
-  const minutes =
-    Math.floor(
-      totalSeconds / 60
-    );
-
-
-  const seconds =
-    totalSeconds % 60;
-
-
-  return (
-
-    String(minutes)
-      .padStart(2,"0")
-
-    +
-
-    ":"
-
-    +
-
-    String(seconds)
-      .padStart(2,"0")
-
-  );
-
+  return String(minutes).padStart(2,"0")+
+    ":"+
+    String(seconds).padStart(2,"0");
 }
-
 
 /* =====================================================
    STATUS
 ===================================================== */
 
-function statusText(status) {
+function statusText(status){
 
-  const map = {
-
-    pending:
-      "รอออกเดินทาง",
-
-    departed:
-      "🚗 กำลังเดินทาง",
-
-    onsite:
-      "📍 ถึงหน้างานแล้ว",
-
-    done:
-      "✅ ทำงานเสร็จแล้ว",
-
-    completed:
-      "🏁 เสร็จสิ้น"
-
+  const map={
+    pending:"รอออกเดินทาง",
+    departed:"🚗 กำลังเดินทาง",
+    onsite:"📍 ถึงหน้างานแล้ว",
+    done:"✅ ทำงานเสร็จแล้ว",
+    completed:"🏁 เสร็จสิ้น"
   };
 
-
-  return (
-    map[status] ||
-    status
-  );
-
+  return map[status]||status;
 }
-
 
 /* =====================================================
    CURRENT JOB
 ===================================================== */
 
-function renderCurrentJob() {
+function renderCurrentJob(){
 
-  const container =
-    document.getElementById(
-      "currentJob"
-    );
+  const container=document.getElementById("currentJob");
 
+  const active=jobs.find(
+    j=>j.status!=="completed"
+  );
 
-  const active =
-    jobs.find(
-      j =>
-        j.status !==
-        "completed"
-    );
+  if(!active){
 
-
-  if (!active) {
-
-    container.innerHTML =
-      '<div class="empty">' +
-      'ยังไม่มี JOB ที่กำลังทำงาน' +
-      '</div>';
+    container.innerHTML=
+      '<div class="empty">ยังไม่มี JOB ที่กำลังทำงาน</div>';
 
     return;
-
   }
 
-
-  let html = `
+  let html=`
 
     <div class="job-number">
-
-      ${escapeHTML(
-        active.job_number
-      )}
-
+      ${escapeHTML(active.job_number)}
     </div>
 
     <div class="remark">
-
-      ${escapeHTML(
-        active.remark || "-"
-      )}
-
+      ${escapeHTML(active.remark||"-")}
     </div>
 
     <div class="status">
-
-      ${statusText(
-        active.status
-      )}
-
+      ${statusText(active.status)}
     </div>
-
   `;
 
+  if(
+    active.status==="departed"||
+    active.status==="onsite"||
+    active.status==="done"
+  ){
 
-  if (
-
-    active.status ===
-      "departed"
-
-    ||
-
-    active.status ===
-      "onsite"
-
-    ||
-
-    active.status ===
-      "done"
-
-  ) {
-
-    html += `
+    html+=`
 
       <div class="countdown">
-
         ${countdown(active)}
-
       </div>
-
     `;
-
   }
 
+  if(active.status==="pending"){
 
-  if (
-    active.status ===
-    "pending"
-  ) {
-
-    html += `
-
-      <button
-        class="btn-blue"
-        onclick="departedJob('${active.id}')">
-
-        🚗 DEPARTED
-
+    html+=`
+      <button class="btn-blue"
+      onclick="departedJob('${active.id}')">
+      🚗 DEPARTED
       </button>
-
     `;
-
   }
 
+  if(active.status==="departed"){
 
-  if (
-    active.status ===
-    "departed"
-  ) {
-
-    html += `
-
-      <button
-        class="btn-green"
-        onclick="onsiteJob('${active.id}')">
-
-        📍 ONSITE
-
+    html+=`
+      <button class="btn-green"
+      onclick="onsiteJob('${active.id}')">
+      📍 ONSITE
       </button>
-
     `;
-
   }
 
+  if(active.status==="onsite"){
 
-  if (
-    active.status ===
-    "onsite"
-  ) {
-
-    html += `
-
-      <button
-        class="btn-orange"
-        onclick="doneJob('${active.id}')">
-
-        ✅ DONE
-
+    html+=`
+      <button class="btn-orange"
+      onclick="doneJob('${active.id}')">
+      ✅ DONE
       </button>
-
     `;
-
   }
 
+  if(active.status==="done"){
 
-  if (
-    active.status ===
-    "done"
-  ) {
-
-    html += `
-
-      <button
-        class="btn-red"
-        onclick="leaveJob('${active.id}')">
-
-        🚪 LEAVE
-
+    html+=`
+      <button class="btn-red"
+      onclick="leaveJob('${active.id}')">
+      🚪 LEAVE
       </button>
-
     `;
-
   }
 
-
-  container.innerHTML =
-    html;
-
+  container.innerHTML=html;
 }
-
 
 /* =====================================================
    TODAY
 ===================================================== */
 
-function renderToday() {
+function renderToday(){
 
-  const container =
-    document.getElementById(
-      "todayJobs"
-    );
+  const container=document.getElementById("todayJobs");
 
+  const today=new Date().toISOString().split("T")[0];
 
-  const today =
-    new Date()
-      .toISOString()
-      .split("T")[0];
+  const search=
+    document.getElementById("searchInput")
+    .value
+    .toLowerCase();
 
+  const list=jobs.filter(job=>{
 
-  const search =
-    document.getElementById(
-      "searchInput"
-    ).value
-      .toLowerCase();
+    const sameDay=job.date===today;
 
+    const match=
+      job.job_number.toLowerCase().includes(search)||
+      (job.remark||"").toLowerCase().includes(search);
 
-  const list =
-    jobs.filter(job => {
+    return sameDay&&match;
+  });
 
-      const sameDay =
-        job.date ===
-        today;
+  if(!list.length){
 
-
-      const match =
-
-        job.job_number
-          .toLowerCase()
-          .includes(search)
-
-        ||
-
-        (
-          job.remark ||
-          ""
-        )
-        .toLowerCase()
-        .includes(search);
-
-
-      return (
-        sameDay &&
-        match
-      );
-
-    });
-
-
-  if (!list.length) {
-
-    container.innerHTML =
-      '<div class="empty">' +
-      'ยังไม่มีงานวันนี้' +
-      '</div>';
+    container.innerHTML=
+      '<div class="empty">ยังไม่มีงานวันนี้</div>';
 
     return;
-
   }
 
+  container.innerHTML=list.map(job=>`
 
-  container.innerHTML =
+    <div class="job-item">
 
-    list.map(job => `
+      <strong>
+        ${escapeHTML(job.job_number)}
+      </strong>
 
-      <div class="job-item">
-
-        <strong>
-
-          ${escapeHTML(
-            job.job_number
-          )}
-
-        </strong>
-
-        <div>
-
-          ${escapeHTML(
-            job.remark || "-"
-          )}
-
-        </div>
-
-        <div class="small">
-
-          ${job.date}
-          ${job.time}
-
-        </div>
-
-        <div class="status">
-
-          ${statusText(
-            job.status
-          )}
-
-        </div>
-
+      <div>
+        ${escapeHTML(job.remark||"-")}
       </div>
 
-    `).join("");
+      <div class="small">
+        ${job.date} ${job.time}
+      </div>
 
+      <div class="status">
+        ${statusText(job.status)}
+      </div>
+
+    </div>
+
+  `).join("");
 }
-
 
 /* =====================================================
    HISTORY
 ===================================================== */
 
-function renderHistory() {
+function renderHistory(){
 
-  const container =
-    document.getElementById(
-      "history"
-    );
+  const container=document.getElementById("history");
 
+  const list=jobs.filter(
+    job=>job.status==="completed"
+  );
 
-  const list =
-    jobs.filter(
-      job =>
-        job.status ===
-        "completed"
-    );
+  if(!list.length){
 
-
-  if (!list.length) {
-
-    container.innerHTML =
-      '<div class="empty">' +
-      'ยังไม่มีประวัติ' +
-      '</div>';
+    container.innerHTML=
+      '<div class="empty">ยังไม่มีประวัติ</div>';
 
     return;
-
   }
 
+  container.innerHTML=
+    list.slice().reverse().map(job=>`
 
-  container.innerHTML =
+      <div class="job-item">
 
-    list
-      .slice()
-      .reverse()
-      .map(job => `
+        <strong>
+          ${escapeHTML(job.job_number)}
+        </strong>
 
-        <div class="job-item">
-
-          <strong>
-
-            ${escapeHTML(
-              job.job_number
-            )}
-
-          </strong>
-
-          <div>
-
-            ${escapeHTML(
-              job.remark || "-"
-            )}
-
-          </div>
-
-          <div class="small">
-
-            วันที่ ${job.date}
-
-          </div>
-
-          <div class="small">
-
-            ออกจากหน้างาน:
-            ${formatDateTime(
-              job.leave_at
-            )}
-
-          </div>
-
+        <div>
+          ${escapeHTML(job.remark||"-")}
         </div>
 
-      `)
-      .join("");
+        <div class="small">
+          วันที่ ${job.date}
+        </div>
 
+        <div class="small">
+          ออกจากหน้างาน:
+          ${formatDateTime(job.leave_at)}
+        </div>
+
+      </div>
+
+    `).join("");
 }
 
-
 /* =====================================================
-   GET SERVICE WORKER
+   SERVICE WORKER
 ===================================================== */
 
-async function getJOBTimeServiceWorker() {
+async function getJOBTimeServiceWorker(){
 
-  if (
-    !("serviceWorker" in navigator)
-  ) {
+  if(!("serviceWorker" in navigator)){
 
     throw new Error(
       "อุปกรณ์นี้ไม่รองรับ Service Worker"
     );
-
   }
 
+  let registration=
+    await navigator.serviceWorker.getRegistration("./");
 
-  let registration =
-    await navigator.serviceWorker.getRegistration(
-      "./"
-    );
+  if(!registration){
 
-
-  if (!registration) {
-
-    registration =
+    registration=
       await navigator.serviceWorker.register(
         "./service-worker.js",
-        {
-          scope: "./"
-        }
+        {scope:"./"}
       );
-
   }
-
 
   await navigator.serviceWorker.ready;
 
-
-  console.log(
-    "JOB TIME Service Worker พร้อมใช้งาน",
-    registration
-  );
-
-
   return registration;
-
 }
 
-
 /* =====================================================
-   ENABLE NOTIFICATIONS - STEP TEST
+   ENABLE NOTIFICATIONS + FCM TOKEN
 ===================================================== */
 
-async function enableNotifications() {
+async function enableNotifications(){
 
-  if (!("Notification" in window)) {
+  if(!("Notification" in window)){
 
-    alert(
-      "อุปกรณ์นี้ไม่รองรับ Notification"
-    );
-
+    alert("อุปกรณ์นี้ไม่รองรับ Notification");
     return false;
-
   }
 
-
-  if (
-    Notification.permission ===
-    "denied"
-  ) {
+  if(Notification.permission==="denied"){
 
     alert(
       "การแจ้งเตือนถูกปิดอยู่ กรุณาเปิดในการตั้งค่า iPhone"
@@ -2006,588 +905,410 @@ async function enableNotifications() {
     updateNotificationStatus();
 
     return false;
-
   }
 
+  try{
 
-  try {
+    /* 1. Notification Permission */
 
-    /* =================================================
-       1. REQUEST PERMISSION
-    ================================================= */
+    let permission=Notification.permission;
 
-    let permission =
-      Notification.permission;
+    if(permission!=="granted"){
 
-
-    if (
-      permission !==
-      "granted"
-    ) {
-
-      permission =
+      permission=
         await Notification.requestPermission();
-
     }
 
+    if(permission!=="granted"){
 
-    if (
-      permission !==
-      "granted"
-    ) {
-
-      updateNotificationStatus();
-
-      return false;
-
+      throw new Error(
+        "ผู้ใช้ยังไม่ได้อนุญาต Notification"
+      );
     }
 
+    /* 2. Service Worker */
 
-    /* =================================================
-       2. SERVICE WORKER
-    ================================================= */
-
-    const registration =
+    const registration=
       await getJOBTimeServiceWorker();
 
-
     console.log(
-      "✅ JOB TIME Service Worker:",
+      "✅ Service Worker:",
       registration
     );
 
+    /* 3. Firebase Installation */
 
-    /* =================================================
-       3. FIREBASE INSTALLATION
-    ================================================= */
-
-    let installationId =
+    let installationId=
       localStorage.getItem(
         "firebaseInstallationId"
       );
 
+    if(!installationId){
 
-    if (!installationId) {
-
-      installationId =
+      installationId=
         await firebaseInstallations.getId();
-
     }
 
-
-    if (!installationId) {
+    if(!installationId){
 
       throw new Error(
         "ไม่สามารถสร้าง Firebase Installation ID ได้"
       );
-
     }
-
 
     localStorage.setItem(
       "firebaseInstallationId",
       installationId
     );
 
-
-    /* =================================================
-       4. SHOW INSTALLATION
-    ================================================= */
-
-    const installationBox =
+    const installationBox=
       document.getElementById(
         "installationBox"
       );
 
-
-    const installationElement =
+    const installationElement=
       document.getElementById(
         "installationId"
       );
 
+    if(installationBox)
+      installationBox.style.display="block";
 
-    if (installationBox) {
-
-      installationBox.style.display =
-        "block";
-
-    }
-
-
-    if (installationElement) {
-
-      installationElement.textContent =
+    if(installationElement)
+      installationElement.textContent=
         installationId;
 
-    }
+    /* 4. Show loading */
 
-
-    console.log(
-      "✅ Firebase Installation ID:",
-      installationId
-    );
-
-
-    /* =================================================
-       5. SERVICE WORKER NOTIFICATION TEST
-    ================================================= */
-
-    await registration.showNotification(
-
-      "🔔 JOB TIME",
-
-      {
-
-        body:
-          "ระบบ Notification พร้อมใช้งานแล้ว",
-
-        icon:
-          "./icon-192.png",
-
-        badge:
-          "./icon-192.png",
-
-        tag:
-          "job-time-system-test",
-
-        requireInteraction:
-          true,
-
-        vibrate:
-          [300, 200, 300],
-
-        data: {
-
-          url:
-            "./"
-
-        }
-
-      }
-
-    );
-
-
-    /* =================================================
-       6. SUCCESS
-    ================================================= */
-
-    const status =
+    const status=
       document.getElementById(
         "notificationStatus"
       );
 
+    if(status){
 
-    if (status) {
-
-      status.innerHTML =
-
-        '<span class="status-ok">' +
-
-        '🟢 Notification พร้อมใช้งาน' +
-
-        '</span>' +
-
-        '<br>' +
-
-        '<span class="small">' +
-
-        'Firebase Installations เชื่อมต่อสำเร็จ' +
-
-        '<br>' +
-
-        'Service Worker ทำงานสำเร็จ' +
-
+      status.innerHTML=
+        '<span class="small">'+
+        '🟡 กำลังขอ FCM Push Token...'+
         '</span>';
-
     }
 
+    console.log(
+      "🟡 กำลังเรียก Firebase getToken()..."
+    );
+
+    /* 5. GET FCM TOKEN */
+
+    const token=
+      await firebaseMessaging.getToken({
+
+        vapidKey:FCM_VAPID_KEY,
+
+        serviceWorkerRegistration:
+          registration
+
+      });
+
+    /* 6. Check Token */
+
+    if(!token){
+
+      throw new Error(
+        "Firebase ไม่ได้ส่ง FCM Push Token กลับมา"
+      );
+    }
+
+    console.log(
+      "🟢 FCM PUSH TOKEN สำเร็จ"
+    );
+
+    console.log(token);
+
+    /* 7. Save Token */
+
+    localStorage.setItem(
+      "fcmToken",
+      token
+    );
+
+    /* 8. Show Token */
+
+    showFCMToken(token);
+
+    /* 9. Status */
+
+    if(status){
+
+      status.innerHTML=
+
+        '<span class="status-ok">'+
+        '🟢 FCM Push Token ใช้งานได้'+
+        '</span>'+
+        '<br><br>'+
+        '<span class="small">'+
+        'Firebase Installation ID: ✅'+
+        '<br>'+
+        'Service Worker: ✅'+
+        '<br>'+
+        'Notification: ✅'+
+        '<br>'+
+        'FCM Push Token: ✅'+
+        '</span>';
+    }
+
+    /* 10. Success */
 
     alert(
 
-      "✅ ขั้นทดสอบผ่าน\n\n" +
-
-      "Firebase Installation ID ใช้งานได้\n" +
-
-      "Service Worker ใช้งานได้\n" +
-
-      "Notification ใช้งานได้\n\n" +
-
-      "ตอนนี้เหลือเฉพาะ FCM Push Token"
-
+      "🎉 FCM Push Token สำเร็จ!\n\n"+
+      "Firebase Installation ID: ✅\n"+
+      "Service Worker: ✅\n"+
+      "Notification: ✅\n"+
+      "FCM Push Token: ✅\n\n"+
+      "ตอนนี้ระบบสามารถใช้ Firebase Cloud Messaging ได้แล้ว"
     );
-
 
     return true;
 
+  }catch(error){
 
-  } catch(error) {
+    console.error("FCM ERROR:",error);
 
-    console.error(
-      "Notification Test Error:",
-      error
-    );
+    const code=
+      error?.code||
+      "ไม่มี error code";
 
-
-    const message =
-      error?.message ||
+    const message=
+      error?.message||
       String(error);
 
-
-    const status =
+    const status=
       document.getElementById(
         "notificationStatus"
       );
 
+    if(status){
 
-    if (status) {
+      status.innerHTML=
 
-      status.innerHTML =
-
-        '<span class="status-error">' +
-
-        '🔴 Notification Test ไม่สำเร็จ' +
-
-        '</span>' +
-
-        '<br>' +
-
-        '<span class="small">' +
-
-        escapeHTML(
-          message
-        ) +
-
+        '<span class="status-error">'+
+        '🔴 FCM Push Token ไม่สำเร็จ'+
+        '</span>'+
+        '<br><br>'+
+        '<span class="small">'+
+        '<b>Error Code:</b><br>'+
+        escapeHTML(code)+
+        '<br><br>'+
+        '<b>Error Message:</b><br>'+
+        escapeHTML(message)+
         '</span>';
-
     }
-
 
     alert(
 
-      "❌ ทดสอบ Notification ไม่สำเร็จ\n\n" +
-
+      "❌ FCM Push Token ไม่สำเร็จ\n\n"+
+      "Error Code:\n"+
+      code+
+      "\n\n"+
+      "Error Message:\n"+
       message
-
     );
 
-
     return false;
-
   }
-
 }
-
 
 /* =====================================================
    SHOW TOKEN
 ===================================================== */
 
-function showFCMToken(token) {
+function showFCMToken(token){
 
-  const box =
-    document.getElementById(
-      "fcmTokenBox"
-    );
+  const box=
+    document.getElementById("fcmTokenBox");
 
+  const input=
+    document.getElementById("fcmToken");
 
-  const input =
-    document.getElementById(
-      "fcmToken"
-    );
+  if(!box||!input)return;
 
+  input.value=token||"";
 
-  if (
-    !box ||
-    !input
-  ) {
-
-    return;
-
-  }
-
-
-  input.value =
-    token || "";
-
-
-  box.style.display =
-    token
-      ? "block"
-      : "none";
-
+  box.style.display=
+    token?"block":"none";
 }
-
 
 /* =====================================================
    COPY TOKEN
 ===================================================== */
 
-async function copyFCMToken() {
+async function copyFCMToken(){
 
-  const input =
-    document.getElementById(
-      "fcmToken"
-    );
+  const input=
+    document.getElementById("fcmToken");
 
+  if(!input||!input.value){
 
-  if (
-    !input ||
-    !input.value
-  ) {
-
-    alert(
-      "ยังไม่มี Firebase Token"
-    );
-
+    alert("ยังไม่มี Firebase Token");
     return;
-
   }
 
-
-  try {
+  try{
 
     await navigator.clipboard.writeText(
       input.value
     );
 
+    alert("📋 คัดลอก Firebase Token แล้ว");
 
-    alert(
-      "📋 คัดลอก Firebase Token แล้ว"
-    );
-
-
-  } catch(error) {
+  }catch(error){
 
     input.select();
 
-    document.execCommand(
-      "copy"
-    );
+    document.execCommand("copy");
 
-
-    alert(
-      "📋 คัดลอก Firebase Token แล้ว"
-    );
-
+    alert("📋 คัดลอก Firebase Token แล้ว");
   }
-
 }
-
 
 /* =====================================================
    NOTIFICATION STATUS
 ===================================================== */
 
-function updateNotificationStatus() {
+function updateNotificationStatus(){
 
-  const element =
+  const element=
     document.getElementById(
       "notificationStatus"
     );
 
+  if(!element)return;
 
-  if (!element) return;
+  if(!("Notification" in window)){
 
-
-  if (
-    !("Notification" in window)
-  ) {
-
-    element.textContent =
+    element.textContent=
       "❌ ไม่รองรับ Notification";
 
     return;
-
   }
 
+  if(Notification.permission==="granted"){
 
-  if (
-    Notification.permission ===
-    "granted"
-  ) {
-
-    const installationId =
+    const installationId=
       localStorage.getItem(
         "firebaseInstallationId"
       );
 
-
-    const savedToken =
+    const savedToken=
       localStorage.getItem(
         "fcmToken"
       );
 
+    if(savedToken){
 
-    if (savedToken) {
-
-      element.innerHTML =
-
-        '<span class="status-ok">' +
-
-        '🟢 เปิดใช้งานการแจ้งเตือนแล้ว' +
-
+      element.innerHTML=
+        '<span class="status-ok">'+
+        '🟢 FCM Push Token พร้อมใช้งาน'+
         '</span>';
-
     }
 
-    else if (installationId) {
+    else if(installationId){
 
-      element.innerHTML =
-
-        '<span class="status-ok">' +
-
-        '🟢 Firebase Installations พร้อมใช้งาน' +
-
-        '</span>' +
-
-        '<br>' +
-
-        '<span class="small">' +
-
-        'กำลังทดสอบ Service Worker' +
-
+      element.innerHTML=
+        '<span class="status-ok">'+
+        '🟢 Firebase Installations พร้อมใช้งาน'+
+        '</span>'+
+        '<br>'+
+        '<span class="small">'+
+        'ยังไม่ได้รับ FCM Push Token'+
         '</span>';
-
     }
 
-    else {
+    else{
 
-      element.innerHTML =
-
-        '🟡 อนุญาต Notification แล้ว';
-
+      element.innerHTML=
+        "🟡 อนุญาต Notification แล้ว";
     }
 
-  }
+  }else if(
+    Notification.permission==="denied"
+  ){
 
-  else if (
-    Notification.permission ===
-    "denied"
-  ) {
-
-    element.innerHTML =
-
-      '<span class="status-error">' +
-
-      '🔴 การแจ้งเตือนถูกปิด' +
-
+    element.innerHTML=
+      '<span class="status-error">'+
+      '🔴 การแจ้งเตือนถูกปิด'+
       '</span>';
 
-  }
+  }else{
 
-  else {
-
-    element.textContent =
+    element.textContent=
       "🟡 ยังไม่ได้อนุญาตการแจ้งเตือน";
-
   }
-
 }
-
 
 /* =====================================================
    TEST NOTIFICATION
 ===================================================== */
 
-async function testNotification() {
+async function testNotification(){
 
-  const granted =
+  const granted=
     await enableNotifications();
 
-
-  if (!granted) {
-
-    return;
-
-  }
-
+  if(!granted)return;
 
   showBanner(
-
     "🔔 ทดสอบสำเร็จ",
-
     "JOB TIME ส่ง Notification แล้ว"
-
   );
-
 }
-
 
 /* =====================================================
    TEST TIMER
 ===================================================== */
 
-async function startTestTimer() {
+async function startTestTimer(){
 
-  const granted =
+  const granted=
     await enableNotifications();
 
+  if(!granted)return;
 
-  if (!granted) {
-
-    return;
-
-  }
-
-
-  let active =
+  let active=
     jobs.find(
-      job =>
-        job.status !==
-        "completed"
+      job=>job.status!=="completed"
     );
 
+  if(active){
 
-  if (active) {
-
-    const confirmUse =
+    const confirmUse=
       confirm(
-
-        "มี JOB กำลังทำงานอยู่\n\n" +
-
+        "มี JOB กำลังทำงานอยู่\n\n"+
         "ต้องการใช้ JOB นี้ทดสอบหรือไม่?"
-
       );
 
-
-    if (!confirmUse) {
-
-      return;
-
-    }
-
+    if(!confirmUse)return;
   }
 
+  if(!active){
 
-  if (!active) {
+    active={
 
-    active = {
-
-      id:
-        Date.now().toString(),
+      id:Date.now().toString(),
 
       job_number:
-        "TEST-" +
-        Math.floor(
-          Math.random() * 10000
-        ),
+        "TEST-"+Math.floor(Math.random()*10000),
 
       date:
-        new Date()
-          .toISOString()
-          .split("T")[0],
+        new Date().toISOString().split("T")[0],
 
       time:
-        new Date()
-          .toTimeString()
-          .slice(0,5),
+        new Date().toTimeString().slice(0,5),
 
       remark:
         "ทดสอบระบบแจ้งเตือน",
 
-      status:
-        "departed",
+      status:"departed",
 
       created_at:
         new Date().toISOString(),
@@ -2595,662 +1316,323 @@ async function startTestTimer() {
       departed_at:
         new Date().toISOString(),
 
-      onsite_at:
-        null,
-
-      done_at:
-        null,
-
-      leave_at:
-        null,
-
-      test_mode:
-        true
-
+      onsite_at:null,
+      done_at:null,
+      leave_at:null,
+      test_mode:true
     };
-
 
     jobs.push(active);
 
+  }else{
+
+    active.test_mode=true;
+    active.status="departed";
+    active.departed_at=new Date().toISOString();
+    active.onsite_at=null;
+    active.done_at=null;
+    active.leave_at=null;
+
+    resetNotification(active);
   }
-
-  else {
-
-    active.test_mode =
-      true;
-
-
-    active.status =
-      "departed";
-
-
-    active.departed_at =
-      new Date().toISOString();
-
-
-    active.onsite_at =
-      null;
-
-
-    active.done_at =
-      null;
-
-
-    active.leave_at =
-      null;
-
-
-    resetNotification(
-      active
-    );
-
-  }
-
 
   saveData();
-
   renderAll();
 
-
   showBanner(
-
     "🧪 TEST TIMER เริ่มแล้ว",
-
     "อีก 10 วินาที กรุณากด ONSITE"
-
   );
-
 }
-
 
 /* =====================================================
    CHECK TIMER
 ===================================================== */
 
-function checkTimers() {
+function checkTimers(){
 
-  const now =
-    Date.now();
+  const now=Date.now();
 
+  jobs.forEach(job=>{
 
-  jobs.forEach(job => {
+    if(
+      job.status!=="departed"&&
+      job.status!=="onsite"&&
+      job.status!=="done"
+    )return;
 
-    if (
+    const target=targetTime(job);
 
-      job.status !==
-        "departed"
+    if(!target)return;
 
-      &&
+    if(now>=target){
 
-      job.status !==
-        "onsite"
+      let key="";
 
-      &&
+      if(job.status==="departed")
+        key=job.id+"-departed";
 
-      job.status !==
-        "done"
+      if(job.status==="onsite")
+        key=job.id+"-onsite";
 
-    ) {
+      if(job.status==="done")
+        key=job.id+"-done";
 
-      return;
+      if(!notifiedJobs.includes(key)){
 
-    }
-
-
-    const target =
-      targetTime(job);
-
-
-    if (!target) {
-
-      return;
-
-    }
-
-
-    if (
-      now >= target
-    ) {
-
-      let key = "";
-
-
-      if (
-        job.status ===
-        "departed"
-      ) {
-
-        key =
-          job.id +
-          "-departed";
-
-      }
-
-
-      if (
-        job.status ===
-        "onsite"
-      ) {
-
-        key =
-          job.id +
-          "-onsite";
-
-      }
-
-
-      if (
-        job.status ===
-        "done"
-      ) {
-
-        key =
-          job.id +
-          "-done";
-
-      }
-
-
-      if (
-        !notifiedJobs.includes(
-          key
-        )
-      ) {
-
-        notifiedJobs.push(
-          key
-        );
-
-
+        notifiedJobs.push(key);
         saveData();
 
-
-        if (
-          job.status ===
-          "departed"
-        ) {
+        if(job.status==="departed"){
 
           notifyUser(
-
             "🚗 JOB TIME",
-
-            "JOB " +
-            job.job_number +
+            "JOB "+job.job_number+
             " ถึงเวลาที่กำหนดแล้ว กรุณากด ONSITE"
-
           );
-
         }
 
-
-        if (
-          job.status ===
-          "onsite"
-        ) {
+        if(job.status==="onsite"){
 
           notifyUser(
-
             "📍 JOB TIME",
-
-            "JOB " +
-            job.job_number +
+            "JOB "+job.job_number+
             " ถึงเวลาที่กำหนดแล้ว กรุณากด DONE"
-
           );
-
         }
 
-
-        if (
-          job.status ===
-          "done"
-        ) {
+        if(job.status==="done"){
 
           notifyUser(
-
             "✅ JOB TIME",
-
-            "JOB " +
-            job.job_number +
+            "JOB "+job.job_number+
             " ถึงเวลาที่กำหนดแล้ว กรุณากด LEAVE"
-
           );
-
         }
-
       }
-
     }
-
   });
 
-
   renderCurrentJob();
-
 }
 
-
-setInterval(
-  checkTimers,
-  1000
-);
-
+setInterval(checkTimers,1000);
 
 /* =====================================================
    SEND LOCAL NOTIFICATION
 ===================================================== */
 
-function notifyUser(
-  title,
-  body
-) {
+function notifyUser(title,body){
 
-  showBanner(
-    title,
-    body
-  );
+  showBanner(title,body);
 
+  if("serviceWorker" in navigator){
 
-  if (
-    "serviceWorker" in navigator
-  ) {
+    navigator.serviceWorker.ready.then(
+      registration=>{
 
-    navigator
-      .serviceWorker
-      .ready
-
-      .then(
-        registration => {
-
-          return registration
-            .showNotification(
-
-              title,
-
-              {
-
-                body:
-                  body,
-
-                tag:
-                  "job-time-" +
-                  Date.now(),
-
-                requireInteraction:
-                  true,
-
-                vibrate:
-                  [300,200,300]
-
-              }
-
-            );
-
-        }
-
-      )
-
-      .catch(
-        error => {
-
-          console.error(
-            error
-          );
-
-        }
-      );
-
+        return registration.showNotification(
+          title,
+          {
+            body:body,
+            tag:"job-time-"+Date.now(),
+            requireInteraction:true,
+            vibrate:[300,200,300]
+          }
+        );
+      }
+    ).catch(error=>{
+      console.error(error);
+    });
   }
-
 }
-
 
 /* =====================================================
    RESET NOTIFICATION
 ===================================================== */
 
-function resetNotification(job) {
+function resetNotification(job){
 
-  notifiedJobs =
+  notifiedJobs=
     notifiedJobs.filter(
-
-      key =>
-        !key.startsWith(
-          job.id + "-"
-        )
-
+      key=>!key.startsWith(job.id+"-")
     );
 
-
   saveData();
-
 }
-
 
 /* =====================================================
    BANNER
 ===================================================== */
 
-function showBanner(
-  title,
-  body
-) {
+function showBanner(title,body){
 
-  const old =
-    document.getElementById(
-      "notifyBanner"
-    );
+  const old=
+    document.getElementById("notifyBanner");
 
+  if(old)old.remove();
 
-  if (old) {
+  const banner=
+    document.createElement("div");
 
-    old.remove();
+  banner.id="notifyBanner";
+  banner.className="banner";
 
-  }
-
-
-  const banner =
-    document.createElement(
-      "div"
-    );
-
-
-  banner.id =
-    "notifyBanner";
-
-
-  banner.className =
-    "banner";
-
-
-  banner.innerHTML = `
+  banner.innerHTML=`
 
     <strong>
-
       ${escapeHTML(title)}
-
     </strong>
 
-
-    <div
-      style="margin-top:6px">
-
+    <div style="margin-top:6px">
       ${escapeHTML(body)}
-
     </div>
 
-
-    <button
-      onclick="
-
-        document
-          .getElementById(
-            'notifyBanner'
-          )
-          .remove()
-
-      ">
-
+    <button onclick="
+      document.getElementById('notifyBanner').remove()
+    ">
       ปิด
-
     </button>
-
   `;
 
+  document.body.appendChild(banner);
 
-  document.body.appendChild(
-    banner
-  );
+  setTimeout(()=>{
 
+    const b=
+      document.getElementById("notifyBanner");
 
-  setTimeout(
+    if(b)b.remove();
 
-    () => {
-
-      const b =
-        document.getElementById(
-          "notifyBanner"
-        );
-
-
-      if (b) {
-
-        b.remove();
-
-      }
-
-    },
-
-    15000
-
-  );
-
+  },15000);
 }
-
 
 /* =====================================================
    FORMAT DATE
 ===================================================== */
 
-function formatDateTime(
-  value
-) {
+function formatDateTime(value){
 
-  if (!value) {
+  if(!value)return "-";
 
-    return "-";
-
-  }
-
-
-  return new Date(value)
-    .toLocaleString(
-      "th-TH"
-    );
-
+  return new Date(value).toLocaleString("th-TH");
 }
-
 
 /* =====================================================
    ESCAPE HTML
 ===================================================== */
 
-function escapeHTML(
-  value
-) {
+function escapeHTML(value){
 
   return String(value)
-
-    .replaceAll(
-      "&",
-      "&amp;"
-    )
-
-    .replaceAll(
-      "<",
-      "&lt;"
-    )
-
-    .replaceAll(
-      ">",
-      "&gt;"
-    )
-
-    .replaceAll(
-      '"',
-      "&quot;"
-    )
-
-    .replaceAll(
-      "'",
-      "&#039;"
-    );
-
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
 }
-
 
 /* =====================================================
    RENDER ALL
 ===================================================== */
 
-function renderAll() {
+function renderAll(){
 
   renderCurrentJob();
-
   renderToday();
-
   renderHistory();
-
   updateNotificationStatus();
-
 }
-
 
 /* =====================================================
-   SERVICE WORKER
+   SERVICE WORKER START
 ===================================================== */
 
-if (
-  "serviceWorker" in navigator
-) {
+if("serviceWorker" in navigator){
 
-  window.addEventListener(
-    "load",
-    async () => {
+  window.addEventListener("load",async()=>{
 
-      try {
+    try{
 
-        const registration =
-          await navigator.serviceWorker.register(
-            "./service-worker.js",
-            {
-              scope: "./"
-            }
-          );
-
-
-        console.log(
-          "JOB TIME Service Worker พร้อมใช้งาน",
-          registration
+      const registration=
+        await navigator.serviceWorker.register(
+          "./service-worker.js",
+          {scope:"./"}
         );
 
+      console.log(
+        "JOB TIME Service Worker พร้อมใช้งาน",
+        registration
+      );
 
-        await navigator.serviceWorker.ready;
+      await navigator.serviceWorker.ready;
 
+      const savedToken=
+        localStorage.getItem("fcmToken");
 
-        const savedToken =
-          localStorage.getItem(
-            "fcmToken"
-          );
+      if(savedToken)
+        showFCMToken(savedToken);
 
-
-        if (savedToken) {
-
-          showFCMToken(
-            savedToken
-          );
-
-        }
-
-
-        const savedInstallationId =
-          localStorage.getItem(
-            "firebaseInstallationId"
-          );
-
-
-        if (
-          savedInstallationId
-        ) {
-
-          const box =
-            document.getElementById(
-              "installationBox"
-            );
-
-
-          const element =
-            document.getElementById(
-              "installationId"
-            );
-
-
-          if (box) {
-
-            box.style.display =
-              "block";
-
-          }
-
-
-          if (element) {
-
-            element.textContent =
-              savedInstallationId;
-
-          }
-
-        }
-
-
-      } catch(error) {
-
-        console.error(
-          "Service Worker Error:",
-          error
+      const savedInstallationId=
+        localStorage.getItem(
+          "firebaseInstallationId"
         );
 
+      if(savedInstallationId){
+
+        const box=
+          document.getElementById(
+            "installationBox"
+          );
+
+        const element=
+          document.getElementById(
+            "installationId"
+          );
+
+        if(box)box.style.display="block";
+
+        if(element)
+          element.textContent=
+            savedInstallationId;
       }
 
+    }catch(error){
+
+      console.error(
+        "Service Worker Error:",
+        error
+      );
     }
-  );
-
+  });
 }
-
 
 /* =====================================================
    FIREBASE FOREGROUND MESSAGE
 ===================================================== */
 
-/*
-   ตอนนี้ยังไม่เปิดใช้งาน FCM Token
-   ส่วนนี้เก็บไว้เพื่อรองรับ FCM ในขั้นถัดไป
-*/
+if(typeof firebaseMessaging!=="undefined"){
 
-if (
-  typeof firebaseMessaging !==
-  "undefined"
-) {
+  firebaseMessaging.onMessage(payload=>{
 
-  firebaseMessaging.onMessage(
-    payload => {
+    console.log(
+      "Firebase foreground message:",
+      payload
+    );
 
-      console.log(
-        "Firebase foreground message:",
-        payload
-      );
+    const title=
+      payload.notification?.title||
+      payload.data?.title||
+      "🔔 JOB TIME";
 
+    const body=
+      payload.notification?.body||
+      payload.data?.body||
+      "ถึงเวลาปฏิบัติงานแล้ว";
 
-      const title =
-        payload.notification?.title ||
-        "🔔 JOB TIME";
-
-
-      const body =
-        payload.notification?.body ||
-        "ถึงเวลาปฏิบัติงานแล้ว";
-
-
-      showBanner(
-        title,
-        body
-      );
-
-    }
-  );
-
+    showBanner(title,body);
+  });
 }
-
 
 /* =====================================================
    START
@@ -3260,7 +1642,5 @@ renderAll();
 
 </script>
 
-
 </body>
-
 </html>
