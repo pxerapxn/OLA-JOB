@@ -516,9 +516,7 @@ label {
 <div class="container">
 
 
-<!-- =====================================================
-     CLOCK
-===================================================== -->
+<!-- CLOCK -->
 
 <div class="card clock">
 
@@ -533,9 +531,7 @@ label {
 </div>
 
 
-<!-- =====================================================
-     CURRENT JOB
-===================================================== -->
+<!-- CURRENT JOB -->
 
 <div class="card">
 
@@ -554,9 +550,7 @@ label {
 </div>
 
 
-<!-- =====================================================
-     ADD JOB
-===================================================== -->
+<!-- ADD JOB -->
 
 <div class="card">
 
@@ -571,9 +565,7 @@ onclick="openModal()">
 </div>
 
 
-<!-- =====================================================
-     NOTIFICATION
-===================================================== -->
+<!-- NOTIFICATION -->
 
 <div class="card notification-box">
 
@@ -662,9 +654,7 @@ onclick="startTestTimer()">
 </div>
 
 
-<!-- =====================================================
-     TODAY
-===================================================== -->
+<!-- TODAY -->
 
 <div class="card">
 
@@ -687,9 +677,7 @@ oninput="renderToday()">
 </div>
 
 
-<!-- =====================================================
-     HISTORY
-===================================================== -->
+<!-- HISTORY -->
 
 <div class="card">
 
@@ -707,9 +695,7 @@ oninput="renderToday()">
 </div>
 
 
-<!-- =====================================================
-     ADD JOB MODAL
-===================================================== -->
+<!-- ADD JOB MODAL -->
 
 <div
 class="modal"
@@ -990,9 +976,7 @@ function saveJob() {
 
   jobs.push(job);
 
-
   saveData();
-
 
   closeModal();
 
@@ -1052,9 +1036,7 @@ async function departedJob(id) {
 
   resetNotification(job);
 
-
   saveData();
-
 
   renderAll();
 
@@ -1086,9 +1068,7 @@ function onsiteJob(id) {
 
   resetNotification(job);
 
-
   saveData();
-
 
   renderAll();
 
@@ -1120,9 +1100,7 @@ function doneJob(id) {
 
   resetNotification(job);
 
-
   saveData();
-
 
   renderAll();
 
@@ -1154,7 +1132,6 @@ function leaveJob(id) {
 
   saveData();
 
-
   renderAll();
 
 
@@ -1177,9 +1154,7 @@ function leaveJob(id) {
 
 function targetTime(job) {
 
-
   if (job.test_mode) {
-
 
     if (
       job.status ===
@@ -1570,7 +1545,6 @@ function renderToday() {
   const list =
     jobs.filter(job => {
 
-
       const sameDay =
         job.date ===
         today;
@@ -1737,10 +1711,10 @@ function renderHistory() {
 
 
 /* =====================================================
-   REGISTER FCM SERVICE WORKER
+   GET SERVICE WORKER
 ===================================================== */
 
-async function getFCMServiceWorker() {
+async function getJOBTimeServiceWorker() {
 
   if (
     !("serviceWorker" in navigator)
@@ -1753,20 +1727,30 @@ async function getFCMServiceWorker() {
   }
 
 
-  const registration =
-    await navigator.serviceWorker.register(
-      "./firebase-messaging-sw.js",
-      {
-        scope: "./"
-      }
+  let registration =
+    await navigator.serviceWorker.getRegistration(
+      "./"
     );
+
+
+  if (!registration) {
+
+    registration =
+      await navigator.serviceWorker.register(
+        "./service-worker.js",
+        {
+          scope: "./"
+        }
+      );
+
+  }
 
 
   await navigator.serviceWorker.ready;
 
 
   console.log(
-    "Firebase Messaging Service Worker พร้อมใช้งาน",
+    "JOB TIME Service Worker พร้อมใช้งาน",
     registration
   );
 
@@ -1813,10 +1797,7 @@ async function enableNotifications() {
 
   try {
 
-
-    /* ---------------------------------------------
-       REQUEST PERMISSION
-    --------------------------------------------- */
+    /* REQUEST PERMISSION */
 
     let permission =
       Notification.permission;
@@ -1845,22 +1826,18 @@ async function enableNotifications() {
     }
 
 
-    /* ---------------------------------------------
-       REGISTER FCM SERVICE WORKER
-    --------------------------------------------- */
+    /* SERVICE WORKER */
 
     const registration =
-      await getFCMServiceWorker();
+      await getJOBTimeServiceWorker();
 
-
-    /* ---------------------------------------------
-       GET FCM TOKEN
-    --------------------------------------------- */
 
     console.log(
       "กำลังขอ Firebase FCM Token..."
     );
 
+
+    /* GET TOKEN */
 
     const token =
       await firebaseMessaging.getToken({
@@ -1925,7 +1902,6 @@ async function enableNotifications() {
 
 
   } catch(error) {
-
 
     console.error(
       "Firebase Notification Error:",
@@ -2057,7 +2033,6 @@ async function copyFCMToken() {
 
     input.select();
 
-
     document.execCommand(
       "copy"
     );
@@ -2138,7 +2113,6 @@ function updateNotificationStatus() {
 
     }
 
-
   }
 
 
@@ -2187,9 +2161,8 @@ async function testNotification() {
 
   try {
 
-
     const registration =
-      await getFCMServiceWorker();
+      await getJOBTimeServiceWorker();
 
 
     await registration.showNotification(
@@ -2226,7 +2199,6 @@ async function testNotification() {
 
 
   } catch(error) {
-
 
     console.error(
       error
@@ -2381,7 +2353,6 @@ async function startTestTimer() {
 
   saveData();
 
-
   renderAll();
 
 
@@ -2407,7 +2378,6 @@ function checkTimers() {
 
 
   jobs.forEach(job => {
-
 
     if (
 
@@ -2445,7 +2415,6 @@ function checkTimers() {
     if (
       now >= target
     ) {
-
 
       let key = "";
 
@@ -2491,7 +2460,6 @@ function checkTimers() {
           key
         )
       ) {
-
 
         notifiedJobs.push(
           key
@@ -2581,7 +2549,6 @@ function notifyUser(
   body
 ) {
 
-
   showBanner(
     title,
     body
@@ -2591,7 +2558,6 @@ function notifyUser(
   if (
     "serviceWorker" in navigator
   ) {
-
 
     navigator
       .serviceWorker
@@ -2673,7 +2639,6 @@ function showBanner(
   title,
   body
 ) {
-
 
   const old =
     document.getElementById(
@@ -2860,34 +2825,25 @@ if (
       try {
 
         /*
-         * ลงทะเบียน Firebase Messaging SW
+         * ใช้ Service Worker เพียงตัวเดียว
          */
 
-        await navigator.serviceWorker.register(
-          "./firebase-messaging-sw.js",
-          {
-            scope: "./"
-          }
-        );
+        const registration =
+          await navigator.serviceWorker.register(
+            "./service-worker.js",
+            {
+              scope: "./"
+            }
+          );
 
 
         console.log(
-          "Firebase Messaging Service Worker พร้อมใช้งาน"
+          "JOB TIME Service Worker พร้อมใช้งาน",
+          registration
         );
 
 
-        /*
-         * ลงทะเบียน JOB TIME SW
-         */
-
-        await navigator.serviceWorker.register(
-          "./service-worker.js"
-        );
-
-
-        console.log(
-          "JOB TIME Service Worker พร้อมใช้งาน"
-        );
+        await navigator.serviceWorker.ready;
 
 
         /*
@@ -2933,10 +2889,8 @@ if (
   "undefined"
 ) {
 
-
   firebaseMessaging.onMessage(
     payload => {
-
 
       console.log(
         "Firebase foreground message:",
@@ -2958,7 +2912,6 @@ if (
         title,
         body
       );
-
 
     }
   );
