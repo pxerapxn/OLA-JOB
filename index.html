@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
+<link rel="manifest" href="./manifest.json">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1395,6 +1396,35 @@ function renderAll() {
 renderAll();
 
 </script>
+<script>
 
+if ("serviceWorker" in navigator) {
+
+  window.addEventListener("load", () => {
+
+    navigator.serviceWorker
+      .register("./service-worker.js")
+      .then(registration => {
+
+        console.log(
+          "JOB TIME Service Worker พร้อมใช้งาน",
+          registration
+        );
+
+      })
+      .catch(error => {
+
+        console.error(
+          "Service Worker Error:",
+          error
+        );
+
+      });
+
+  });
+
+}
+
+</script>
 </body>
 </html>
