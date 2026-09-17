@@ -504,7 +504,9 @@ label {
 <div class="container">
 
 
-<!-- CLOCK -->
+<!-- =====================================================
+     CLOCK
+===================================================== -->
 
 <div class="card clock">
 
@@ -519,7 +521,9 @@ label {
 </div>
 
 
-<!-- CURRENT JOB -->
+<!-- =====================================================
+     CURRENT JOB
+===================================================== -->
 
 <div class="card">
 
@@ -538,7 +542,9 @@ label {
 </div>
 
 
-<!-- ADD JOB -->
+<!-- =====================================================
+     ADD JOB
+===================================================== -->
 
 <div class="card">
 
@@ -553,7 +559,9 @@ onclick="openModal()">
 </div>
 
 
-<!-- NOTIFICATION -->
+<!-- =====================================================
+     NOTIFICATION
+===================================================== -->
 
 <div class="card notification-box">
 
@@ -640,11 +648,12 @@ onclick="startTestTimer()">
 
 </button>
 
-
 </div>
 
 
-<!-- TODAY -->
+<!-- =====================================================
+     TODAY
+===================================================== -->
 
 <div class="card">
 
@@ -658,7 +667,7 @@ id="searchInput"
 class="search"
 type="text"
 placeholder="🔎 ค้นหา Job หรือ Remark"
-oninput="renderToday">
+oninput="renderToday()">
 
 
 <div id="todayJobs">
@@ -668,7 +677,9 @@ oninput="renderToday">
 </div>
 
 
-<!-- HISTORY -->
+<!-- =====================================================
+     HISTORY
+===================================================== -->
 
 <div class="card">
 
@@ -687,7 +698,9 @@ oninput="renderToday">
 </div>
 
 
-<!-- ADD JOB MODAL -->
+<!-- =====================================================
+     ADD JOB MODAL
+===================================================== -->
 
 <div
 class="modal"
@@ -988,7 +1001,15 @@ function saveJob() {
 
 async function departedJob(id) {
 
-  await enableNotifications();
+  const notificationReady =
+    await enableNotifications();
+
+
+  if (!notificationReady) {
+
+    return;
+
+  }
 
 
   const job =
@@ -1686,7 +1707,7 @@ function renderHistory() {
 
 
 /* =====================================================
-   ENABLE NOTIFICATION + FIREBASE TOKEN
+   ENABLE NOTIFICATION
 ===================================================== */
 
 async function enableNotifications() {
@@ -1700,6 +1721,7 @@ async function enableNotifications() {
     );
 
     return false;
+
   }
 
 
@@ -1715,6 +1737,7 @@ async function enableNotifications() {
     updateNotificationStatus();
 
     return false;
+
   }
 
 
@@ -1750,19 +1773,25 @@ async function enableNotifications() {
     updateNotificationStatus();
 
 
-    /* ================================================
-       SERVICE WORKER
-    ================================================ */
+    /* =================================================
+       REGISTER FIREBASE MESSAGING SERVICE WORKER
+    ================================================= */
 
     const registration =
-      await navigator
-        .serviceWorker
-        .ready;
+      await navigator.serviceWorker.register(
+        "./firebase-messaging-sw.js",
+        {
+          scope: "./"
+        }
+      );
 
 
-    /* ================================================
+    await navigator.serviceWorker.ready;
+
+
+    /* =================================================
        FIREBASE TOKEN
-    ================================================ */
+    ================================================= */
 
     const token =
       await firebaseMessaging.getToken({
@@ -1829,7 +1858,9 @@ async function enableNotifications() {
     return true;
 
 
-  } catch(error) {
+  }
+
+  catch(error) {
 
     console.error(
       "Firebase Notification Error:",
@@ -1838,8 +1869,11 @@ async function enableNotifications() {
 
 
     alert(
+
       "ไม่สามารถเชื่อมต่อ Firebase Notification ได้\n\n" +
+
       error.message
+
     );
 
 
@@ -1925,7 +1959,9 @@ async function copyFCMToken() {
     );
 
 
-  } catch(error) {
+  }
+
+  catch(error) {
 
     input.select();
 
@@ -1984,7 +2020,6 @@ function updateNotificationStatus() {
 
       '</span>';
 
-
   }
 
 
@@ -1995,7 +2030,6 @@ function updateNotificationStatus() {
 
     element.textContent =
       "🔴 การแจ้งเตือนถูกปิด";
-
 
   }
 
@@ -2034,33 +2068,35 @@ async function testNotification() {
     try {
 
       const registration =
-        await navigator
-          .serviceWorker
-          .ready;
-
-
-      await registration
-        .showNotification(
-
-          "🔔 JOB TIME",
-
+        await navigator.serviceWorker.register(
+          "./firebase-messaging-sw.js",
           {
-
-            body:
-              "ทดสอบแจ้งเตือนสำเร็จ!",
-
-            tag:
-              "job-time-test",
-
-            requireInteraction:
-              true,
-
-            vibrate:
-              [300,200,300]
-
+            scope: "./"
           }
-
         );
+
+
+      await registration.showNotification(
+
+        "🔔 JOB TIME",
+
+        {
+
+          body:
+            "ทดสอบแจ้งเตือนสำเร็จ!",
+
+          tag:
+            "job-time-test",
+
+          requireInteraction:
+            true,
+
+          vibrate:
+            [300,200,300]
+
+        }
+
+      );
 
 
       showBanner(
@@ -2072,7 +2108,9 @@ async function testNotification() {
       );
 
 
-    } catch(error) {
+    }
+
+    catch(error) {
 
       console.error(
         error
@@ -2080,7 +2118,8 @@ async function testNotification() {
 
 
       alert(
-        "ไม่สามารถส่ง Notification ผ่าน Service Worker ได้"
+        "ไม่สามารถส่ง Notification ผ่าน Service Worker ได้\n\n" +
+        error.message
       );
 
     }
@@ -2690,7 +2729,7 @@ function renderAll() {
 
 
 /* =====================================================
-   SERVICE WORKER
+   MAIN SERVICE WORKER
 ===================================================== */
 
 if (
@@ -2722,13 +2761,6 @@ if (
 
             );
 
-
-            /*
-
-              ถ้ามี Token ที่เคยบันทึกไว้
-              ให้แสดงกลับมาอีกครั้ง
-
-            */
 
             const savedToken =
               localStorage.getItem(
