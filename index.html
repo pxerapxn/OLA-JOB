@@ -32,10 +32,8 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
 
-<!-- Firebase Installations -->
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-installations-compat.js"></script>
 
-<!-- Firebase Messaging -->
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging-compat.js"></script>
 
 
@@ -105,11 +103,6 @@ async function testFirebaseInstallations() {
       "🟡 กำลังทดสอบ Firebase Installations...";
 
 
-    console.log(
-      "กำลังทดสอบ Firebase Installations..."
-    );
-
-
     const installationId =
       await firebaseInstallations.getId();
 
@@ -124,6 +117,34 @@ async function testFirebaseInstallations() {
       "firebaseInstallationId",
       installationId
     );
+
+
+    const box =
+      document.getElementById(
+        "installationBox"
+      );
+
+
+    const element =
+      document.getElementById(
+        "installationId"
+      );
+
+
+    if (box) {
+
+      box.style.display =
+        "block";
+
+    }
+
+
+    if (element) {
+
+      element.textContent =
+        installationId;
+
+    }
 
 
     status.innerHTML =
@@ -673,7 +694,9 @@ label {
 <div class="container">
 
 
-<!-- CLOCK -->
+<!-- =====================================================
+     CLOCK
+===================================================== -->
 
 <div class="card clock">
 
@@ -688,7 +711,9 @@ label {
 </div>
 
 
-<!-- CURRENT JOB -->
+<!-- =====================================================
+     CURRENT JOB
+===================================================== -->
 
 <div class="card">
 
@@ -707,7 +732,9 @@ label {
 </div>
 
 
-<!-- ADD JOB -->
+<!-- =====================================================
+     ADD JOB
+===================================================== -->
 
 <div class="card">
 
@@ -722,7 +749,9 @@ onclick="openModal()">
 </div>
 
 
-<!-- NOTIFICATION -->
+<!-- =====================================================
+     NOTIFICATION
+===================================================== -->
 
 <div class="card notification-box">
 
@@ -772,8 +801,7 @@ style="display:none;">
 Firebase Installation ID
 </b>
 
-<div
-id="installationId">
+<div id="installationId">
 -
 </div>
 
@@ -837,7 +865,9 @@ onclick="startTestTimer()">
 </div>
 
 
-<!-- TODAY -->
+<!-- =====================================================
+     TODAY
+===================================================== -->
 
 <div class="card">
 
@@ -860,7 +890,9 @@ oninput="renderToday()">
 </div>
 
 
-<!-- HISTORY -->
+<!-- =====================================================
+     HISTORY
+===================================================== -->
 
 <div class="card">
 
@@ -878,7 +910,9 @@ oninput="renderToday()">
 </div>
 
 
-<!-- ADD JOB MODAL -->
+<!-- =====================================================
+     ADD JOB MODAL
+===================================================== -->
 
 <div
 class="modal"
@@ -1944,14 +1978,12 @@ async function getJOBTimeServiceWorker() {
 
 
 /* =====================================================
-   ENABLE NOTIFICATIONS
+   ENABLE NOTIFICATIONS - STEP TEST
 ===================================================== */
 
 async function enableNotifications() {
 
-  if (
-    !("Notification" in window)
-  ) {
+  if (!("Notification" in window)) {
 
     alert(
       "อุปกรณ์นี้ไม่รองรับ Notification"
@@ -1980,7 +2012,9 @@ async function enableNotifications() {
 
   try {
 
-    /* REQUEST PERMISSION */
+    /* =================================================
+       1. REQUEST PERMISSION
+    ================================================= */
 
     let permission =
       Notification.permission;
@@ -2009,20 +2043,23 @@ async function enableNotifications() {
     }
 
 
-    /* SERVICE WORKER */
+    /* =================================================
+       2. SERVICE WORKER
+    ================================================= */
 
     const registration =
       await getJOBTimeServiceWorker();
 
 
-    /* =================================================
-       TEST INSTALLATION FIRST
-    ================================================= */
-
     console.log(
-      "กำลังตรวจสอบ Firebase Installation..."
+      "✅ JOB TIME Service Worker:",
+      registration
     );
 
+
+    /* =================================================
+       3. FIREBASE INSTALLATION
+    ================================================= */
 
     let installationId =
       localStorage.getItem(
@@ -2041,7 +2078,7 @@ async function enableNotifications() {
     if (!installationId) {
 
       throw new Error(
-        "Firebase ไม่สามารถสร้าง Installation ID ได้"
+        "ไม่สามารถสร้าง Firebase Installation ID ได้"
       );
 
     }
@@ -2052,6 +2089,10 @@ async function enableNotifications() {
       installationId
     );
 
+
+    /* =================================================
+       4. SHOW INSTALLATION
+    ================================================= */
 
     const installationBox =
       document.getElementById(
@@ -2082,57 +2123,54 @@ async function enableNotifications() {
 
 
     console.log(
-      "Firebase Installation ID:",
+      "✅ Firebase Installation ID:",
       installationId
     );
 
 
     /* =================================================
-       GET FCM TOKEN
+       5. SERVICE WORKER NOTIFICATION TEST
     ================================================= */
 
-    console.log(
-      "กำลังขอ Firebase FCM Token..."
+    await registration.showNotification(
+
+      "🔔 JOB TIME",
+
+      {
+
+        body:
+          "ระบบ Notification พร้อมใช้งานแล้ว",
+
+        icon:
+          "./icon-192.png",
+
+        badge:
+          "./icon-192.png",
+
+        tag:
+          "job-time-system-test",
+
+        requireInteraction:
+          true,
+
+        vibrate:
+          [300, 200, 300],
+
+        data: {
+
+          url:
+            "./"
+
+        }
+
+      }
+
     );
 
 
-    const token =
-      await firebaseMessaging.getToken({
-
-        vapidKey:
-          FCM_VAPID_KEY,
-
-        serviceWorkerRegistration:
-          registration
-
-      });
-
-
-    if (!token) {
-
-      throw new Error(
-        "Firebase ไม่ส่ง Registration Token กลับมา"
-      );
-
-    }
-
-
-    console.log(
-      "JOB TIME FCM TOKEN:",
-      token
-    );
-
-
-    localStorage.setItem(
-      "fcmToken",
-      token
-    );
-
-
-    showFCMToken(
-      token
-    );
-
+    /* =================================================
+       6. SUCCESS
+    ================================================= */
 
     const status =
       document.getElementById(
@@ -2140,19 +2178,44 @@ async function enableNotifications() {
       );
 
 
-    status.innerHTML =
+    if (status) {
 
-      '<span class="status-ok">' +
+      status.innerHTML =
 
-      '🟢 เปิดใช้งานการแจ้งเตือนแล้ว' +
+        '<span class="status-ok">' +
 
-      '<br><span class="small">' +
+        '🟢 Notification พร้อมใช้งาน' +
 
-      'Firebase Push พร้อมใช้งาน' +
+        '</span>' +
 
-      '</span>' +
+        '<br>' +
 
-      '</span>';
+        '<span class="small">' +
+
+        'Firebase Installations เชื่อมต่อสำเร็จ' +
+
+        '<br>' +
+
+        'Service Worker ทำงานสำเร็จ' +
+
+        '</span>';
+
+    }
+
+
+    alert(
+
+      "✅ ขั้นทดสอบผ่าน\n\n" +
+
+      "Firebase Installation ID ใช้งานได้\n" +
+
+      "Service Worker ใช้งานได้\n" +
+
+      "Notification ใช้งานได้\n\n" +
+
+      "ตอนนี้เหลือเฉพาะ FCM Push Token"
+
+    );
 
 
     return true;
@@ -2161,7 +2224,7 @@ async function enableNotifications() {
   } catch(error) {
 
     console.error(
-      "Firebase Notification Error:",
+      "Notification Test Error:",
       error
     );
 
@@ -2171,30 +2234,38 @@ async function enableNotifications() {
       String(error);
 
 
-    document.getElementById(
-      "notificationStatus"
-    ).innerHTML =
+    const status =
+      document.getElementById(
+        "notificationStatus"
+      );
 
-      '<span class="status-error">' +
 
-      '🔴 เชื่อมต่อ Firebase ไม่สำเร็จ' +
+    if (status) {
 
-      '</span>' +
+      status.innerHTML =
 
-      '<br>' +
+        '<span class="status-error">' +
 
-      '<span class="small">' +
+        '🔴 Notification Test ไม่สำเร็จ' +
 
-      escapeHTML(
-        message
-      ) +
+        '</span>' +
 
-      '</span>';
+        '<br>' +
+
+        '<span class="small">' +
+
+        escapeHTML(
+          message
+        ) +
+
+        '</span>';
+
+    }
 
 
     alert(
 
-      "ไม่สามารถเชื่อมต่อ Firebase Notification ได้\n\n" +
+      "❌ ทดสอบ Notification ไม่สำเร็จ\n\n" +
 
       message
 
@@ -2336,15 +2407,15 @@ function updateNotificationStatus() {
     "granted"
   ) {
 
-    const savedToken =
-      localStorage.getItem(
-        "fcmToken"
-      );
-
-
     const installationId =
       localStorage.getItem(
         "firebaseInstallationId"
+      );
+
+
+    const savedToken =
+      localStorage.getItem(
+        "fcmToken"
       );
 
 
@@ -2374,7 +2445,7 @@ function updateNotificationStatus() {
 
         '<span class="small">' +
 
-        'ยังไม่ได้รับ FCM Registration Token' +
+        'กำลังทดสอบ Service Worker' +
 
         '</span>';
 
@@ -2384,20 +2455,11 @@ function updateNotificationStatus() {
 
       element.innerHTML =
 
-        '🟡 อนุญาต Notification แล้ว' +
-
-        '<br>' +
-
-        '<span class="small">' +
-
-        'กดเปิดใช้งานเพื่อเชื่อมต่อ Firebase' +
-
-        '</span>';
+        '🟡 อนุญาต Notification แล้ว';
 
     }
 
   }
-
 
   else if (
     Notification.permission ===
@@ -2413,7 +2475,6 @@ function updateNotificationStatus() {
       '</span>';
 
   }
-
 
   else {
 
@@ -2442,61 +2503,13 @@ async function testNotification() {
   }
 
 
-  try {
+  showBanner(
 
-    const registration =
-      await getJOBTimeServiceWorker();
+    "🔔 ทดสอบสำเร็จ",
 
+    "JOB TIME ส่ง Notification แล้ว"
 
-    await registration.showNotification(
-
-      "🔔 JOB TIME",
-
-      {
-
-        body:
-          "ทดสอบแจ้งเตือนสำเร็จ!",
-
-        tag:
-          "job-time-test-" +
-          Date.now(),
-
-        requireInteraction:
-          true,
-
-        vibrate:
-          [300,200,300]
-
-      }
-
-    );
-
-
-    showBanner(
-
-      "🔔 ทดสอบสำเร็จ",
-
-      "JOB TIME ส่ง Notification แล้ว"
-
-    );
-
-
-  } catch(error) {
-
-    console.error(
-      error
-    );
-
-
-    alert(
-
-      "ไม่สามารถส่ง Notification ผ่าน Service Worker ได้\n\n" +
-
-      error.message
-
-    );
-
-  }
+  );
 
 }
 
@@ -3155,6 +3168,7 @@ if (
               "installationBox"
             );
 
+
           const element =
             document.getElementById(
               "installationId"
@@ -3197,6 +3211,11 @@ if (
 /* =====================================================
    FIREBASE FOREGROUND MESSAGE
 ===================================================== */
+
+/*
+   ตอนนี้ยังไม่เปิดใช้งาน FCM Token
+   ส่วนนี้เก็บไว้เพื่อรองรับ FCM ในขั้นถัดไป
+*/
 
 if (
   typeof firebaseMessaging !==
