@@ -34,6 +34,8 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging-compat.js"></script>
 
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-installations-compat.js"></script>
+
 
 <script>
 
@@ -70,6 +72,10 @@ firebase.initializeApp(
 
 const firebaseMessaging =
   firebase.messaging();
+
+
+const firebaseInstallations =
+  firebase.installations();
 
 </script>
 
@@ -589,6 +595,15 @@ class="btn-test"
 onclick="testNotification()">
 
 🧪 ทดสอบแจ้งเตือนทันที
+
+</button>
+
+
+<button
+class="btn-test"
+onclick="testFirebaseInstallations()">
+
+🔧 ตรวจสอบ Firebase Installations
 
 </button>
 
@@ -1707,6 +1722,82 @@ function renderHistory() {
 
 
 /* =====================================================
+   TEST FIREBASE INSTALLATIONS
+===================================================== */
+
+async function testFirebaseInstallations() {
+
+  try {
+
+    console.log(
+      "Firebase Config:",
+      firebaseConfig
+    );
+
+
+    console.log(
+      "Firebase Project ID:",
+      firebaseConfig.projectId
+    );
+
+
+    console.log(
+      "Firebase App ID:",
+      firebaseConfig.appId
+    );
+
+
+    console.log(
+      "Firebase API Key:",
+      firebaseConfig.apiKey
+    );
+
+
+    const installationId =
+      await firebaseInstallations.getId();
+
+
+    console.log(
+      "Firebase Installation ID:",
+      installationId
+    );
+
+
+    alert(
+
+      "✅ Firebase Installations ใช้งานได้\n\n" +
+
+      "Installation ID:\n" +
+
+      installationId
+
+    );
+
+
+  }
+
+  catch(error) {
+
+    console.error(
+      "Firebase Installations Test Error:",
+      error
+    );
+
+
+    alert(
+
+      "❌ Firebase Installations ยังมีปัญหา\n\n" +
+
+      error.message
+
+    );
+
+  }
+
+}
+
+
+/* =====================================================
    ENABLE NOTIFICATION
 ===================================================== */
 
@@ -1774,15 +1865,18 @@ async function enableNotifications() {
 
 
     /* =================================================
-       REGISTER FIREBASE MESSAGING SERVICE WORKER
+       FIREBASE MESSAGING SERVICE WORKER
     ================================================= */
 
     const registration =
       await navigator.serviceWorker.register(
+
         "./firebase-messaging-sw.js",
+
         {
           scope: "./"
         }
+
       );
 
 
@@ -1797,6 +1891,7 @@ async function enableNotifications() {
       await firebaseMessaging.getToken({
 
         vapidKey:
+
           "BHdcwG22SK0Rqec8MSACS8wYVwnWHuXxrPj-rm4tOVQpvzWpL0COJeEmjy-gF5GmzU0AoorV9dR16DfFVIfAfOI",
 
         serviceWorkerRegistration:
@@ -1845,6 +1940,7 @@ async function enableNotifications() {
         '</span>';
 
     }
+
 
     else {
 
@@ -2069,10 +2165,13 @@ async function testNotification() {
 
       const registration =
         await navigator.serviceWorker.register(
+
           "./firebase-messaging-sw.js",
+
           {
             scope: "./"
           }
+
         );
 
 
@@ -2118,8 +2217,11 @@ async function testNotification() {
 
 
       alert(
+
         "ไม่สามารถส่ง Notification ผ่าน Service Worker ได้\n\n" +
+
         error.message
+
       );
 
     }
